@@ -1,3 +1,11 @@
+# Project specific
+
+# Node
 node_modules/
 
+# IDE files
 .idea/
+
+# OS auto-generated files
+.DS_Store
+._*

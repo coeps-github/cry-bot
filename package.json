@@ -1,0 +1,28 @@
+{
+  "name": "cry-bot",
+  "version": "0.0.1",
+  "description": "crypto trade bot - node console app - pluggable architecture",
+  "keywords": [
+    "crypto",
+    "trade",
+    "bot",
+    "node",
+    "console",
+    "pluggable"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coeps-github/cry-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/coeps-github/cry-bot/issues"
+  },
+  "homepage": "https://github.com/coeps-github/cry-bot#readme",
+  "author": "coeps",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  }
+}
