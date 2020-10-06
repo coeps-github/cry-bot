@@ -3,6 +3,9 @@
 # Node
 node_modules/
 
+# Coverage files
+coverage/
+
 # IDE files
 .idea/
 
