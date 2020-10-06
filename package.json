@@ -21,7 +21,7 @@
   "author": "coeps",
   "license": "MIT",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=14.13.0"
   },
   "main": "src/index.js",
   "scripts": {
