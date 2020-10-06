@@ -28,12 +28,18 @@
     "test": "jest",
     "lint": "eslint {src}/**/*.js",
     "start": "nodemon --inspect src/index.js",
-    "start:break": "nodemon --inspect-brk src/index.js"
+    "start:break": "nodemon --inspect-brk src/index.js",
+    "update-dependencies": "npm-check-updates --upgrade && npm install"
   },
-  "dependencies": {},
+  "dependencies": {
+    "asciichart": "1.5.25",
+    "enquirer": "2.3.6",
+    "node-binance-api": "0.12.1"
+  },
   "devDependencies": {
     "eslint": "7.10.0",
     "jest": "26.5.2",
-    "nodemon": "2.0.4"
+    "nodemon": "2.0.4",
+    "npm-check-updates": "9.0.4"
   }
 }
