@@ -23,23 +23,34 @@
   "engines": {
     "node": ">=14.13.0"
   },
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint {src}/**/*.js",
-    "start": "nodemon --inspect src/index.js",
-    "start:break": "nodemon --inspect-brk src/index.js",
+    "lint": "eslint src/**/*.ts",
+    "build": "rimraf dist && tsc",
+    "start": "node dist/index.js --config config/crybot.json",
+    "start:watch": "nodemon",
+    "start:break": "nodemon --config nodemon-break.json",
     "update-dependencies": "npm-check-updates --upgrade && npm install"
   },
   "dependencies": {
     "asciichart": "1.5.25",
     "enquirer": "2.3.6",
-    "node-binance-api": "0.12.1"
+    "minimist": "1.2.5",
+    "node-binance-api": "0.12.2"
   },
   "devDependencies": {
-    "eslint": "7.10.0",
-    "jest": "26.5.2",
-    "nodemon": "2.0.4",
-    "npm-check-updates": "9.0.4"
+    "@types/jest": "26.0.15",
+    "@types/minimist": "1.2.0",
+    "@types/node": "14.14.3",
+    "@typescript-eslint/eslint-plugin": "4.6.0",
+    "@typescript-eslint/parser": "4.6.0",
+    "eslint": "7.12.0",
+    "jest": "26.6.1",
+    "nodemon": "2.0.6",
+    "npm-check-updates": "9.2.2",
+    "rimraf": "3.0.2",
+    "ts-jest": "26.4.2",
+    "typescript": "4.0.3"
   }
 }
