@@ -1,7 +1,7 @@
 {
   "name": "cry-bot",
   "version": "0.0.1",
-  "description": "crypto trade bot - node console app - pluggable architecture",
+  "description": "crypto trade bot - node console app",
   "keywords": [
     "crypto",
     "trade",
