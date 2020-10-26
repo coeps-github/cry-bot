@@ -26,6 +26,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
+    "test:coverage": "jest --collectCoverage",
     "lint": "eslint src/**/*.ts",
     "build": "rimraf dist && tsc",
     "start": "node dist/index.js --config config/crybot.json",

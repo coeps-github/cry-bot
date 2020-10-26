@@ -1,15 +1,15 @@
 # Project specific
-config/
-dist/
+/config
+/dist
 
 # Node
-node_modules/
+/node_modules
 
 # Coverage files
-coverage/
+/coverage
 
 # IDE files
-.idea/
+/.idea
 
 # OS auto-generated files
 .DS_Store
