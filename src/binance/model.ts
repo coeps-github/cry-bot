@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export interface BinanceConfig {
   readonly apiKey: string;
   readonly apiSecret: string;
@@ -5,14 +7,11 @@ export interface BinanceConfig {
 
 export interface Binance {
   readonly getCandleSticks: (
-    callback: CandleSticksCallback,
-    symbol?: string,
+    symbols?: string[],
     period?: Period,
     finalOnly?: boolean
-  ) => void;
+  ) => Observable<CandleSticks>;
 }
-
-export type CandleSticksCallback = (update: CandleSticks) => void
 
 export type Period =
   '1m'

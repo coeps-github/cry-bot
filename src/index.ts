@@ -4,6 +4,10 @@ import { getConfig } from './config/config';
 const config = getConfig();
 const binance = getBinance(config.binance);
 
-binance.getCandleSticks((update) => {
+binance.getCandleSticks().subscribe((update) => {
+  console.log(update);
+});
+
+binance.getCandleSticks().subscribe((update) => {
   console.log(update);
 });
