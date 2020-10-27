@@ -1,14 +1,24 @@
 import BinanceApi from 'node-binance-api';
-import { Binance, BinanceConfig, CandleSticks, CandleSticksShort, Chart, ChartWrapper, Period } from './model';
-import { Observable } from 'rxjs';
-import { filter, map, share } from 'rxjs/operators';
+import {
+  Binance,
+  BinanceConfig,
+  CandleSticks,
+  CandleSticksShort,
+  Chart,
+  ChartWrapper,
+  Period,
+  Tick,
+  TickExtended
+} from './model';
+import { concat, forkJoin, Observable } from 'rxjs';
+import { concatMap, filter, map, share, take } from 'rxjs/operators';
 
 export function getBinance(config: BinanceConfig): Binance {
-  const binance = BinanceApi().options(config);
-  return {
+  const binanceApi = BinanceApi().options(config);
+  const binance = {
     getChart: (symbol = 'BTCUSDT', period: Period = '1m') => {
       return new Observable<ChartWrapper>((observer) => {
-        binance.websockets.chart(symbol, period, (symbol: string, interval: string, chart: Chart) => observer.next({
+        binanceApi.websockets.chart(symbol, period, (symbol: string, interval: string, chart: Chart) => observer.next({
           symbol,
           interval,
           chart
@@ -19,7 +29,7 @@ export function getBinance(config: BinanceConfig): Binance {
       }).pipe(
         share(),
         map((chartWrapper: ChartWrapper) => {
-          const lastTickTime = binance.last(chartWrapper.chart);
+          const lastTickTime = binanceApi.last(chartWrapper.chart);
           const lastTick = chartWrapper.chart[lastTickTime];
           return {
             ...chartWrapper,
@@ -31,7 +41,7 @@ export function getBinance(config: BinanceConfig): Binance {
     },
     getCandleSticks: (symbols = ['BTCUSDT'], period: Period = '1m', finalOnly = true) => {
       return new Observable<CandleSticksShort>((observer) => {
-        binance.websockets.candlesticks(symbols, period, (candleSticks: CandleSticksShort) => observer.next(candleSticks));
+        binanceApi.websockets.candlesticks(symbols, period, (candleSticks: CandleSticksShort) => observer.next(candleSticks));
         return () => {
           // empty
         };
@@ -63,4 +73,38 @@ export function getBinance(config: BinanceConfig): Binance {
       );
     }
   };
+  return {
+    ...binance,
+    getTicks: (symbols = ['BTCUSDT'], period: Period = '1m') => {
+      const charts = symbols.map(symbol => binance.getChart(symbol, period).pipe(
+        take(1),
+        map(chart => Object.keys(chart.chart)
+          .reduce((arr, key) => [...arr, { ...chart.chart[key], eventTime: +key }], [] as Tick[])
+          .slice(0, -1)
+          .map(tick => ({
+            ...tick,
+            symbol: chart.symbol,
+            isFinal: true
+          } as TickExtended)))
+      ));
+      const joinedCharts = forkJoin(charts).pipe(
+        concatMap(charts => ([] as TickExtended[])
+          .concat(...charts)
+          .sort((a, b) => a.eventTime === b.eventTime ? 0 : a.eventTime < b.eventTime ? -1 : 1))
+      );
+      const candles = binance.getCandleSticks(symbols, period).pipe(
+        map(candle => ({
+          open: candle.ticks.open,
+          high: candle.ticks.high,
+          low: candle.ticks.low,
+          close: candle.ticks.close,
+          volume: candle.ticks.volume,
+          eventTime: candle.eventTime,
+          symbol: candle.symbol,
+          isFinal: candle.ticks.isFinal
+        } as TickExtended))
+      );
+      return concat(joinedCharts, candles);
+    }
+  } as Binance;
 }
