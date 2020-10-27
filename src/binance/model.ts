@@ -6,11 +6,8 @@ export interface BinanceConfig {
 }
 
 export interface Binance {
-  readonly getCandleSticks: (
-    symbols?: string[],
-    period?: Period,
-    finalOnly?: boolean
-  ) => Observable<CandleSticks>;
+  readonly getChart: (symbol?: string, period?: Period) => Observable<ChartExtended>;
+  readonly getCandleSticks: (symbols?: string[], period?: Period, finalOnly?: boolean) => Observable<CandleSticks>;
 }
 
 export type Period =
@@ -37,12 +34,15 @@ export interface CandleSticksShort {
   readonly k: TicksShort;
 }
 
-export interface TicksShort {
+export interface TickShort {
   readonly o: string;
   readonly h: string;
   readonly l: string;
   readonly c: string;
   readonly v: string;
+}
+
+export interface TicksShort extends TickShort {
   readonly n: number;
   readonly i: string;
   readonly x: boolean;
@@ -58,12 +58,15 @@ export interface CandleSticks {
   readonly ticks: Ticks;
 }
 
-export interface Ticks {
+export interface Tick {
   readonly open: string;
   readonly high: string;
   readonly low: string;
   readonly close: string;
   readonly volume: string;
+}
+
+export interface Ticks extends Tick {
   readonly trades: number;
   readonly interval: string;
   readonly isFinal: boolean;
@@ -72,4 +75,17 @@ export interface Ticks {
   readonly quoteBuyVolume: string;
 }
 
+export interface Chart {
+  readonly [key: string]: Tick;
+}
 
+export interface ChartWrapper {
+  readonly symbol: string;
+  readonly interval: string;
+  readonly chart: Chart;
+}
+
+export interface ChartExtended extends ChartWrapper {
+  readonly lastTickTime: string;
+  readonly lastTick: Tick;
+}
