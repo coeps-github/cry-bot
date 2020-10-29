@@ -19,13 +19,22 @@ export function aggregateHits(tick: Tick, prevCandleStatistic: CandleStatistic):
   return prevCandleStatistic.hits;
 }
 
-export function aggregateWin(tick: Tick, prevCandleStatistic: CandleStatistic): number {
+export function aggregateTotalWin(tick: Tick, prevCandleStatistic: CandleStatistic): number {
   const pBuy = prevBuy(prevCandleStatistic);
   const pSell = prevSell(prevCandleStatistic);
   if (pBuy && !pSell) {
-    return prevCandleStatistic.win + getWin(tick);
+    return prevCandleStatistic.totalWin + getWin(tick);
   }
-  return prevCandleStatistic.win;
+  return prevCandleStatistic.totalWin;
+}
+
+export function aggregateAverageWinPerCandle(tick: Tick, prevCandleStatistic: CandleStatistic): number {
+  const pBuy = prevBuy(prevCandleStatistic);
+  const pSell = prevSell(prevCandleStatistic);
+  if (pBuy && !pSell) {
+    return (prevCandleStatistic.totalWin + getWin(tick)) / prevCandleStatistic.hits;
+  }
+  return prevCandleStatistic.avgWin;
 }
 
 export function getNextUpCount(tick: Tick, prevCandleStatistic: CandleStatistic): number {

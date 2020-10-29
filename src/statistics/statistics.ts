@@ -2,7 +2,13 @@ import { Binance, Period } from '../binance/model';
 import { CandleStatistics, Statistics } from './model';
 import { scan } from 'rxjs/operators';
 import { candleCombinations } from './constants';
-import { aggregateHits, aggregateWin, getNextDownCount, getNextUpCount } from './helpers';
+import {
+  aggregateAverageWinPerCandle,
+  aggregateHits,
+  aggregateTotalWin,
+  getNextDownCount,
+  getNextUpCount
+} from './helpers';
 
 export function getStatistics(binance: Binance): Statistics {
   return {
@@ -12,19 +18,21 @@ export function getStatistics(binance: Binance): Statistics {
           const statistics = result[tick.symbol] || combinations.map(cc => ({
             combination: cc,
             hits: 0,
-            win: 0,
+            totalWin: 0,
             upCount: 0,
             downCount: 0
           }));
           const updatedStatistics = statistics.map(statistic => {
             const hits = aggregateHits(tick, statistic);
-            const win = aggregateWin(tick, statistic);
+            const totalWin = aggregateTotalWin(tick, statistic);
+            const avgWin = aggregateAverageWinPerCandle(tick, statistic);
             const upCount = getNextUpCount(tick, statistic);
             const downCount = getNextDownCount(tick, statistic);
             return {
               ...statistic,
               hits,
-              win,
+              totalWin,
+              avgWin,
               upCount,
               downCount
             };
