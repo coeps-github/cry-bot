@@ -22,16 +22,20 @@ export function getStatistics(binance: Binance): Statistics {
             const combinationDown = statistic.combination.down > 0 ? statistic.combination.down : 1;
             const buy = statistic.upCount > (combinationUp - 1);
             const sell = buy && statistic.downCount > (combinationDown - 1);
-            const upCount = tickIsUp ? statistic.upCount + 1 : buy ? statistic.upCount : 0;
-            const downCount = buy && !tickIsUp ? statistic.downCount + 1 : sell ? statistic.downCount : 0;
-            const hits = buy && sell ? statistic.hits + 1 : statistic.hits;
+            const upCount = buy && sell ? 0 : statistic.upCount;
+            const downCount = buy && sell ? 0 : statistic.downCount;
+            const nextUpCount = tickIsUp ? upCount + 1 : buy ? upCount : 0;
+            const nextDownCount = buy && !tickIsUp ? downCount + 1 : sell ? downCount : 0;
+            const nextBuy = nextUpCount > (combinationUp - 1);
+            const nextSell = nextBuy && nextDownCount > (combinationDown - 1);
+            const hits = nextBuy && nextSell ? statistic.hits + 1 : statistic.hits;
             const w = buy && !sell ? statistic.win + win(tick) : statistic.win;
             return {
               ...statistic,
               hits,
               win: w,
-              upCount: buy && sell ? 0 : upCount,
-              downCount: buy && sell ? 0 : downCount
+              upCount: nextUpCount,
+              downCount: nextDownCount
             };
           });
           return {

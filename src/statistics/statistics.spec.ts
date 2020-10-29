@@ -18,12 +18,12 @@ describe('statistics', () => {
           {
             symbol: 'A',
             open: '1',
-            close: '2'
+            close: '3'
           },
           {
             symbol: 'A',
-            open: '2',
-            close: '3'
+            open: '3',
+            close: '6'
           }
         ])
       } as Binance);
@@ -48,7 +48,7 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 3,
-              win: 2
+              win: 5
             },
             {
               combination: {
@@ -57,7 +57,7 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 3,
-              win: 2
+              win: 5
             },
             {
               combination: {
@@ -66,7 +66,7 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 3,
-              win: 1
+              win: 3
             }
           ]
         });
@@ -79,12 +79,12 @@ describe('statistics', () => {
         getTicks: () => from([
           {
             symbol: 'A',
-            open: '3',
-            close: '2'
+            open: '6',
+            close: '3'
           },
           {
             symbol: 'A',
-            open: '2',
+            open: '3',
             close: '1'
           },
           {
@@ -157,7 +157,7 @@ describe('statistics', () => {
           {
             symbol: 'A',
             open: '1',
-            close: '2'
+            close: '3'
           }
         ])
       } as Binance);
@@ -182,7 +182,7 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 2,
-              win: 1
+              win: 2
             },
             {
               combination: {
@@ -191,7 +191,7 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 2,
-              win: 1
+              win: 2
             },
             {
               combination: {
@@ -219,11 +219,11 @@ describe('statistics', () => {
           {
             symbol: 'A',
             open: '1',
-            close: '2'
+            close: '3'
           },
           {
             symbol: 'A',
-            open: '2',
+            open: '3',
             close: '1'
           }
         ])
@@ -247,7 +247,7 @@ describe('statistics', () => {
                 up: 0, down: 0
               },
               downCount: 1,
-              hits: 0,
+              hits: 1,
               upCount: 2,
               win: 0
             },
@@ -256,7 +256,7 @@ describe('statistics', () => {
                 up: 1, down: 1
               },
               downCount: 1,
-              hits: 0,
+              hits: 1,
               upCount: 2,
               win: 0
             },
@@ -265,9 +265,9 @@ describe('statistics', () => {
                 up: 2, down: 1
               },
               downCount: 1,
-              hits: 0,
+              hits: 1,
               upCount: 2,
-              win: -1
+              win: -2
             }
           ]
         });
