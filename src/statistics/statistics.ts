@@ -1,8 +1,8 @@
 import { Binance, Period } from '../binance/model';
 import { CandleStatistics, Statistics } from './model';
 import { scan } from 'rxjs/operators';
-import { up, win } from './helpers';
 import { candleCombinations } from './constants';
+import { aggregateHits, aggregateWin, getNextDownCount, getNextUpCount } from './helpers';
 
 export function getStatistics(binance: Binance): Statistics {
   return {
@@ -17,25 +17,16 @@ export function getStatistics(binance: Binance): Statistics {
             downCount: 0
           }));
           const updatedStatistics = statistics.map(statistic => {
-            const tickIsUp = up(tick);
-            const combinationUp = statistic.combination.up > 0 ? statistic.combination.up : 1;
-            const combinationDown = statistic.combination.down > 0 ? statistic.combination.down : 1;
-            const buy = statistic.upCount > (combinationUp - 1);
-            const sell = buy && statistic.downCount > (combinationDown - 1);
-            const upCount = buy && sell ? 0 : statistic.upCount;
-            const downCount = buy && sell ? 0 : statistic.downCount;
-            const nextUpCount = tickIsUp ? upCount + 1 : buy ? upCount : 0;
-            const nextDownCount = buy && !tickIsUp ? downCount + 1 : sell ? downCount : 0;
-            const nextBuy = nextUpCount > (combinationUp - 1);
-            const nextSell = nextBuy && nextDownCount > (combinationDown - 1);
-            const hits = nextBuy && nextSell ? statistic.hits + 1 : statistic.hits;
-            const w = buy && !sell ? statistic.win + win(tick) : statistic.win;
+            const hits = aggregateHits(tick, statistic);
+            const win = aggregateWin(tick, statistic);
+            const upCount = getNextUpCount(tick, statistic);
+            const downCount = getNextDownCount(tick, statistic);
             return {
               ...statistic,
               hits,
-              win: w,
-              upCount: nextUpCount,
-              downCount: nextDownCount
+              win,
+              upCount,
+              downCount
             };
           });
           return {

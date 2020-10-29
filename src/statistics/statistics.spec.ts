@@ -208,7 +208,7 @@ describe('statistics', () => {
       });
     });
 
-    it('should stop counting when going up and then down', (done) => {
+    it('should start counting when going up and then down', (done) => {
       const statistics = getStatistics({
         getTicks: () => from([
           {
@@ -246,26 +246,302 @@ describe('statistics', () => {
               combination: {
                 up: 0, down: 0
               },
-              downCount: 1,
+              downCount: 0,
               hits: 1,
-              upCount: 2,
+              upCount: 0,
               win: 0
             },
             {
               combination: {
                 up: 1, down: 1
               },
-              downCount: 1,
+              downCount: 0,
               hits: 1,
-              upCount: 2,
+              upCount: 0,
               win: 0
             },
             {
               combination: {
                 up: 2, down: 1
               },
-              downCount: 1,
+              downCount: 0,
               hits: 1,
+              upCount: 0,
+              win: -2
+            }
+          ]
+        });
+        done();
+      });
+    });
+
+    it('should stop counting when going up and then down', (done) => {
+      const statistics = getStatistics({
+        getTicks: () => from([
+          {
+            symbol: 'A',
+            open: '0',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '3'
+          },
+          {
+            symbol: 'A',
+            open: '3',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '0'
+          }
+        ])
+      } as Binance);
+      const combinations = [
+        {
+          up: 0, down: 0
+        },
+        {
+          up: 1, down: 1
+        },
+        {
+          up: 2, down: 1
+        }
+      ];
+      statistics.analyzeCandles(undefined, undefined, combinations).pipe(skip(3)).subscribe(result => {
+        expect(result).toEqual({
+          A: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              downCount: 0,
+              hits: 1,
+              upCount: 0,
+              win: 0
+            },
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              downCount: 0,
+              hits: 1,
+              upCount: 0,
+              win: 0
+            },
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              downCount: 0,
+              hits: 1,
+              upCount: 0,
+              win: -2
+            }
+          ]
+        });
+        done();
+      });
+    });
+
+    it('should continuously start and stop counting when going up and down multiple times', (done) => {
+      const statistics = getStatistics({
+        getTicks: () => from([
+          {
+            symbol: 'A',
+            open: '0',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '3'
+          },
+          {
+            symbol: 'A',
+            open: '3',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '0'
+          },
+          {
+            symbol: 'A',
+            open: '0',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '3'
+          },
+          {
+            symbol: 'A',
+            open: '3',
+            close: '6'
+          },
+          {
+            symbol: 'A',
+            open: '6',
+            close: '3'
+          },
+          {
+            symbol: 'A',
+            open: '3',
+            close: '1'
+          }
+        ])
+      } as Binance);
+      const combinations = [
+        {
+          up: 0, down: 0
+        },
+        {
+          up: 1, down: 1
+        },
+        {
+          up: 2, down: 1
+        }
+      ];
+      statistics.analyzeCandles(undefined, undefined, combinations).pipe(skip(8)).subscribe(result => {
+        expect(result).toEqual({
+          A: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              downCount: 0,
+              hits: 2,
+              upCount: 0,
+              win: 2
+            },
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              downCount: 0,
+              hits: 2,
+              upCount: 0,
+              win: 2
+            },
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              downCount: 0,
+              hits: 2,
+              upCount: 0,
+              win: -2
+            }
+          ]
+        });
+        done();
+      });
+    });
+
+    it('should continuously start and stop counting when going up and down multiple times and have counts when stopping going up', (done) => {
+      const statistics = getStatistics({
+        getTicks: () => from([
+          {
+            symbol: 'A',
+            open: '0',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '3'
+          },
+          {
+            symbol: 'A',
+            open: '3',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '0'
+          },
+          {
+            symbol: 'A',
+            open: '0',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '3'
+          },
+          {
+            symbol: 'A',
+            open: '3',
+            close: '6'
+          },
+          {
+            symbol: 'A',
+            open: '6',
+            close: '3'
+          },
+          {
+            symbol: 'A',
+            open: '3',
+            close: '1'
+          },
+          {
+            symbol: 'A',
+            open: '1',
+            close: '3'
+          },
+          {
+            symbol: 'A',
+            open: '3',
+            close: '6'
+          }
+        ])
+      } as Binance);
+      const combinations = [
+        {
+          up: 0, down: 0
+        },
+        {
+          up: 1, down: 1
+        },
+        {
+          up: 2, down: 1
+        }
+      ];
+      statistics.analyzeCandles(undefined, undefined, combinations).pipe(skip(10)).subscribe(result => {
+        expect(result).toEqual({
+          A: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              downCount: 0,
+              hits: 2,
+              upCount: 2,
+              win: 5
+            },
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              downCount: 0,
+              hits: 2,
+              upCount: 2,
+              win: 5
+            },
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              downCount: 0,
+              hits: 2,
               upCount: 2,
               win: -2
             }
