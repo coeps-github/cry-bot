@@ -1,4 +1,4 @@
-import { Tick } from '../binance/model';
+import { Tick } from '../../binance/model';
 import { CandleStatistic } from './model';
 
 export function isUp(tick: Tick): boolean {

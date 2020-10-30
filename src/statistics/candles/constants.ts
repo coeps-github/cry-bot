@@ -1,6 +1,6 @@
 import { CandleCombination } from './model';
 
-export const candleCombinations: CandleCombination[] = [
+export const defaultCandleCombinations: CandleCombination[] = [
   { up: 1, down: 1 },
   { up: 2, down: 1 },
   { up: 3, down: 1 },
