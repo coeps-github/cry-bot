@@ -38,7 +38,8 @@
     "enquirer": "2.3.6",
     "minimist": "1.2.5",
     "node-binance-api": "0.12.2",
-    "rxjs": "6.6.3"
+    "rxjs": "6.6.3",
+    "trading-signals": "1.1.1"
   },
   "devDependencies": {
     "@types/jest": "26.0.15",
