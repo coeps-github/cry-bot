@@ -13,7 +13,9 @@ export interface CandleStatistic {
   readonly combination: CandleCombination;
   readonly hits: number;
   readonly totalWin: number;
+  readonly minWin: number;
   readonly avgWin: number;
+  readonly maxWin: number;
   readonly upCount: number;
   readonly downCount: number;
 }

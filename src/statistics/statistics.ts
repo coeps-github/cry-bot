@@ -3,8 +3,10 @@ import { CandleStatistics, Statistics } from './model';
 import { scan } from 'rxjs/operators';
 import { candleCombinations } from './constants';
 import {
-  aggregateAverageWinPerCandle,
+  aggregateAvgWinPerCandle,
   aggregateHits,
+  aggregateMaxWinPerCandle,
+  aggregateMinWinPerCandle,
   aggregateTotalWin,
   getNextDownCount,
   getNextUpCount
@@ -19,20 +21,27 @@ export function getStatistics(binance: Binance): Statistics {
             combination: cc,
             hits: 0,
             totalWin: 0,
+            minWin: 0,
+            avgWin: 0,
+            maxWin: 0,
             upCount: 0,
             downCount: 0
           }));
           const updatedStatistics = statistics.map(statistic => {
             const hits = aggregateHits(tick, statistic);
             const totalWin = aggregateTotalWin(tick, statistic);
-            const avgWin = aggregateAverageWinPerCandle(tick, statistic);
+            const minWin = aggregateMinWinPerCandle(tick, statistic);
+            const avgWin = aggregateAvgWinPerCandle(tick, statistic);
+            const maxWin = aggregateMaxWinPerCandle(tick, statistic);
             const upCount = getNextUpCount(tick, statistic);
             const downCount = getNextDownCount(tick, statistic);
             return {
               ...statistic,
               hits,
               totalWin,
+              minWin,
               avgWin,
+              maxWin,
               upCount,
               downCount
             };

@@ -28,13 +28,33 @@ export function aggregateTotalWin(tick: Tick, prevCandleStatistic: CandleStatist
   return prevCandleStatistic.totalWin;
 }
 
-export function aggregateAverageWinPerCandle(tick: Tick, prevCandleStatistic: CandleStatistic): number {
+export function aggregateMinWinPerCandle(tick: Tick, prevCandleStatistic: CandleStatistic): number {
+  const pBuy = prevBuy(prevCandleStatistic);
+  const pSell = prevSell(prevCandleStatistic);
+  if (pBuy && !pSell) {
+    const win = getWin(tick);
+    return prevCandleStatistic.minWin < win ? prevCandleStatistic.minWin : win;
+  }
+  return prevCandleStatistic.minWin;
+}
+
+export function aggregateAvgWinPerCandle(tick: Tick, prevCandleStatistic: CandleStatistic): number {
   const pBuy = prevBuy(prevCandleStatistic);
   const pSell = prevSell(prevCandleStatistic);
   if (pBuy && !pSell) {
     return (prevCandleStatistic.totalWin + getWin(tick)) / prevCandleStatistic.hits;
   }
   return prevCandleStatistic.avgWin;
+}
+
+export function aggregateMaxWinPerCandle(tick: Tick, prevCandleStatistic: CandleStatistic): number {
+  const pBuy = prevBuy(prevCandleStatistic);
+  const pSell = prevSell(prevCandleStatistic);
+  if (pBuy && !pSell) {
+    const win = getWin(tick);
+    return prevCandleStatistic.maxWin > win ? prevCandleStatistic.maxWin : win;
+  }
+  return prevCandleStatistic.maxWin;
 }
 
 export function getNextUpCount(tick: Tick, prevCandleStatistic: CandleStatistic): number {
