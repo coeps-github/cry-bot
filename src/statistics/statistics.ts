@@ -4,6 +4,7 @@ import { scan } from 'rxjs/operators';
 import { candleCombinations } from './constants';
 import {
   aggregateAvgWinPerCandle,
+  aggregateCurrentWin,
   aggregateHits,
   aggregateMaxWinPerCandle,
   aggregateMinWinPerCandle,
@@ -26,6 +27,7 @@ export function getStatistics(binance: Binance): Statistics {
           const statistics = result[tick.symbol] || combinations.map(cc => ({
             combination: cc,
             hits: 0,
+            currentWin: 0,
             totalWin: 0,
             minWin: 0,
             avgWin: 0,
@@ -41,6 +43,7 @@ export function getStatistics(binance: Binance): Statistics {
             const b = buy(up, statistic);
             const s = sell(!up, statistic);
             const hits = aggregateHits(b, s, statistic);
+            const currentWin = aggregateCurrentWin(pBuy, pSell, b, s, win, statistic);
             const totalWin = aggregateTotalWin(pBuy, pSell, win, statistic);
             const minWin = aggregateMinWinPerCandle(pBuy, pSell, win, statistic);
             const avgWin = aggregateAvgWinPerCandle(pBuy, pSell, hits, totalWin, statistic);
@@ -50,6 +53,7 @@ export function getStatistics(binance: Binance): Statistics {
             return {
               ...statistic,
               hits,
+              currentWin,
               totalWin,
               minWin,
               avgWin,

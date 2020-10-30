@@ -16,6 +16,16 @@ export function aggregateHits(buy: boolean, sell: boolean, prevCandleStatistic: 
   return prevCandleStatistic.hits;
 }
 
+export function aggregateCurrentWin(prevBuy: boolean, prevSell: boolean, buy: boolean, sell: boolean, win: number, prevCandleStatistic: CandleStatistic): number {
+  if (buy && sell) {
+    return 0;
+  }
+  if (prevBuy && !prevSell) {
+    return prevCandleStatistic.currentWin + win;
+  }
+  return prevCandleStatistic.currentWin;
+}
+
 export function aggregateTotalWin(prevBuy: boolean, prevSell: boolean, win: number, prevCandleStatistic: CandleStatistic): number {
   if (prevBuy && !prevSell) {
     return prevCandleStatistic.totalWin + win;
