@@ -48,7 +48,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 3,
-              win: 5
+              totalWin: 5,
+              maxWin: 3,
+              minWin: 0,
+              avgWin: 0
             },
             {
               combination: {
@@ -57,7 +60,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 3,
-              win: 5
+              totalWin: 5,
+              maxWin: 3,
+              minWin: 0,
+              avgWin: 0
             },
             {
               combination: {
@@ -66,7 +72,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 3,
-              win: 3
+              totalWin: 3,
+              maxWin: 3,
+              minWin: 0,
+              avgWin: 0
             }
           ]
         });
@@ -115,7 +124,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 0,
-              win: 0
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0
             },
             {
               combination: {
@@ -124,7 +136,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 0,
-              win: 0
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0
             },
             {
               combination: {
@@ -133,7 +148,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 0,
-              win: 0
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0
             }
           ]
         });
@@ -182,7 +200,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 2,
-              win: 2
+              totalWin: 2,
+              maxWin: 2,
+              minWin: 0,
+              avgWin: 0
             },
             {
               combination: {
@@ -191,7 +212,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 2,
-              win: 2
+              totalWin: 2,
+              maxWin: 2,
+              minWin: 0,
+              avgWin: 0
             },
             {
               combination: {
@@ -200,7 +224,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 0,
               upCount: 2,
-              win: 0
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0
             }
           ]
         });
@@ -249,7 +276,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 1,
               upCount: 0,
-              win: 0
+              totalWin: 0,
+              maxWin: 2,
+              minWin: -2,
+              avgWin: 0
             },
             {
               combination: {
@@ -258,7 +288,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 1,
               upCount: 0,
-              win: 0
+              totalWin: 0,
+              maxWin: 2,
+              minWin: -2,
+              avgWin: 0
             },
             {
               combination: {
@@ -267,7 +300,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 1,
               upCount: 0,
-              win: -2
+              totalWin: -2,
+              maxWin: 0,
+              minWin: -2,
+              avgWin: -2
             }
           ]
         });
@@ -321,7 +357,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 1,
               upCount: 0,
-              win: 0
+              totalWin: 0,
+              maxWin: 2,
+              minWin: -2,
+              avgWin: 0
             },
             {
               combination: {
@@ -330,7 +369,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 1,
               upCount: 0,
-              win: 0
+              totalWin: 0,
+              maxWin: 2,
+              minWin: -2,
+              avgWin: 0
             },
             {
               combination: {
@@ -339,7 +381,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 1,
               upCount: 0,
-              win: -2
+              totalWin: -2,
+              maxWin: 0,
+              minWin: -2,
+              avgWin: -2
             }
           ]
         });
@@ -418,7 +463,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 2,
               upCount: 0,
-              win: 2
+              totalWin: 2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: 1
             },
             {
               combination: {
@@ -427,7 +475,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 2,
               upCount: 0,
-              win: 2
+              totalWin: 2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: 1
             },
             {
               combination: {
@@ -436,7 +487,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 2,
               upCount: 0,
-              win: -2
+              totalWin: -2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: -1
             }
           ]
         });
@@ -525,7 +579,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 2,
               upCount: 2,
-              win: 5
+              totalWin: 5,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: 2.5
             },
             {
               combination: {
@@ -534,7 +591,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 2,
               upCount: 2,
-              win: 5
+              totalWin: 5,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: 2.5
             },
             {
               combination: {
@@ -543,7 +603,10 @@ describe('statistics', () => {
               downCount: 0,
               hits: 2,
               upCount: 2,
-              win: -2
+              totalWin: -2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: -1
             }
           ]
         });

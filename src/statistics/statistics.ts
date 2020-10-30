@@ -8,8 +8,14 @@ import {
   aggregateMaxWinPerCandle,
   aggregateMinWinPerCandle,
   aggregateTotalWin,
+  buy,
   getNextDownCount,
-  getNextUpCount
+  getNextUpCount,
+  getWin,
+  isUp,
+  prevBuy,
+  prevSell,
+  sell
 } from './helpers';
 
 export function getStatistics(binance: Binance): Statistics {
@@ -28,13 +34,19 @@ export function getStatistics(binance: Binance): Statistics {
             downCount: 0
           }));
           const updatedStatistics = statistics.map(statistic => {
-            const hits = aggregateHits(tick, statistic);
-            const totalWin = aggregateTotalWin(tick, statistic);
-            const minWin = aggregateMinWinPerCandle(tick, statistic);
-            const avgWin = aggregateAvgWinPerCandle(tick, statistic);
-            const maxWin = aggregateMaxWinPerCandle(tick, statistic);
-            const upCount = getNextUpCount(tick, statistic);
-            const downCount = getNextDownCount(tick, statistic);
+            const up = isUp(tick);
+            const win = getWin(tick);
+            const pBuy = prevBuy(statistic);
+            const pSell = prevSell(statistic);
+            const b = buy(up, statistic);
+            const s = sell(!up, statistic);
+            const hits = aggregateHits(b, s, statistic);
+            const totalWin = aggregateTotalWin(pBuy, pSell, win, statistic);
+            const minWin = aggregateMinWinPerCandle(pBuy, pSell, win, statistic);
+            const avgWin = aggregateAvgWinPerCandle(pBuy, pSell, hits, totalWin, statistic);
+            const maxWin = aggregateMaxWinPerCandle(pBuy, pSell, win, statistic);
+            const upCount = getNextUpCount(b, s, up, statistic);
+            const downCount = getNextDownCount(b, s, !up, statistic);
             return {
               ...statistic,
               hits,

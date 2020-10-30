@@ -9,72 +9,56 @@ export function getWin(tick: Tick): number {
   return +tick.close - +tick.open;
 }
 
-export function aggregateHits(tick: Tick, prevCandleStatistic: CandleStatistic): number {
-  const up = isUp(tick);
-  const b = buy(up, prevCandleStatistic);
-  const s = sell(!up, prevCandleStatistic);
-  if (b && s) {
+export function aggregateHits(buy: boolean, sell: boolean, prevCandleStatistic: CandleStatistic): number {
+  if (buy && sell) {
     return prevCandleStatistic.hits + 1;
   }
   return prevCandleStatistic.hits;
 }
 
-export function aggregateTotalWin(tick: Tick, prevCandleStatistic: CandleStatistic): number {
-  const pBuy = prevBuy(prevCandleStatistic);
-  const pSell = prevSell(prevCandleStatistic);
-  if (pBuy && !pSell) {
-    return prevCandleStatistic.totalWin + getWin(tick);
+export function aggregateTotalWin(prevBuy: boolean, prevSell: boolean, win: number, prevCandleStatistic: CandleStatistic): number {
+  if (prevBuy && !prevSell) {
+    return prevCandleStatistic.totalWin + win;
   }
   return prevCandleStatistic.totalWin;
 }
 
-export function aggregateMinWinPerCandle(tick: Tick, prevCandleStatistic: CandleStatistic): number {
-  const pBuy = prevBuy(prevCandleStatistic);
-  const pSell = prevSell(prevCandleStatistic);
-  if (pBuy && !pSell) {
-    const win = getWin(tick);
+export function aggregateMinWinPerCandle(prevBuy: boolean, prevSell: boolean, win: number, prevCandleStatistic: CandleStatistic): number {
+  if (prevBuy && !prevSell) {
     return prevCandleStatistic.minWin < win ? prevCandleStatistic.minWin : win;
   }
   return prevCandleStatistic.minWin;
 }
 
-export function aggregateAvgWinPerCandle(tick: Tick, prevCandleStatistic: CandleStatistic): number {
-  const pBuy = prevBuy(prevCandleStatistic);
-  const pSell = prevSell(prevCandleStatistic);
-  if (pBuy && !pSell) {
-    return (prevCandleStatistic.totalWin + getWin(tick)) / prevCandleStatistic.hits;
+export function aggregateAvgWinPerCandle(prevBuy: boolean, prevSell: boolean, hits: number, totalWin: number, prevCandleStatistic: CandleStatistic): number {
+  if (prevBuy && !prevSell) {
+    if (hits > 0) {
+      return totalWin / hits;
+    }
+    return 0;
   }
   return prevCandleStatistic.avgWin;
 }
 
-export function aggregateMaxWinPerCandle(tick: Tick, prevCandleStatistic: CandleStatistic): number {
-  const pBuy = prevBuy(prevCandleStatistic);
-  const pSell = prevSell(prevCandleStatistic);
-  if (pBuy && !pSell) {
-    const win = getWin(tick);
+export function aggregateMaxWinPerCandle(prevBuy: boolean, prevSell: boolean, win: number, prevCandleStatistic: CandleStatistic): number {
+  if (prevBuy && !prevSell) {
     return prevCandleStatistic.maxWin > win ? prevCandleStatistic.maxWin : win;
   }
   return prevCandleStatistic.maxWin;
 }
 
-export function getNextUpCount(tick: Tick, prevCandleStatistic: CandleStatistic): number {
-  const up = isUp(tick);
-  const b = buy(up, prevCandleStatistic);
-  const s = sell(!up, prevCandleStatistic);
-  if (b && s) {
+export function getNextUpCount(buy: boolean, sell: boolean, up: boolean, prevCandleStatistic: CandleStatistic): number {
+  if (buy && sell) {
     return 0;
   }
-  return count(isUp(tick), prevCandleStatistic.combination.up || 1, prevCandleStatistic.upCount);
+  return count(up, prevCandleStatistic.combination.up || 1, prevCandleStatistic.upCount);
 }
 
-export function getNextDownCount(tick: Tick, prevCandleStatistic: CandleStatistic): number {
-  const up = isUp(tick);
-  const b = buy(up, prevCandleStatistic);
-  const s = sell(!up, prevCandleStatistic);
-  if (b && s) {
+export function getNextDownCount(buy: boolean, sell: boolean, down: boolean, prevCandleStatistic: CandleStatistic): number {
+  if (buy && sell) {
     return 0;
   }
-  return count(b && !isUp(tick), prevCandleStatistic.combination.down || 1, prevCandleStatistic.downCount);
+  return count(buy && down, prevCandleStatistic.combination.down || 1, prevCandleStatistic.downCount);
 }
 
 export function prevBuy(prevCandleStatistic: CandleStatistic): boolean {
