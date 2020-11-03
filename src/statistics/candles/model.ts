@@ -1,20 +1,16 @@
+import { Statistic } from '../model';
+
 export interface CandleStatistics {
   readonly [key: string]: CandleStatistic[];
 }
 
-export interface CandleStatistic {
+export interface CandleStatistic extends Statistic {
   readonly combination: CandleCombination;
-  readonly hits: number;
-  readonly currentWin: number;
-  readonly totalWin: number;
-  readonly minWin: number;
-  readonly avgWin: number;
-  readonly maxWin: number;
   readonly upCount: number;
   readonly downCount: number;
 }
 
-export interface CandleCombination {
+export interface CandleCombination extends Record<string, number> {
   readonly up: number;
   readonly down: number;
 }

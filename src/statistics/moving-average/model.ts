@@ -1,18 +1,17 @@
+import { Statistic } from '../model';
+import { SMA } from 'trading-signals';
+
 export interface MovingAverageStatistics {
   readonly [key: string]: MovingAverageStatistic[];
 }
 
-export interface MovingAverageStatistic {
+export interface MovingAverageStatistic extends Statistic {
   readonly combination: MovingAverageCombination;
-  readonly hits: number;
-  readonly currentWin: number;
-  readonly totalWin: number;
-  readonly minWin: number;
-  readonly avgWin: number;
-  readonly maxWin: number;
+  readonly smallSMA: SMA;
+  readonly bigSMA: SMA;
 }
 
-export interface MovingAverageCombination {
+export interface MovingAverageCombination extends Record<string, number> {
   readonly small: number;
   readonly big: number;
 }

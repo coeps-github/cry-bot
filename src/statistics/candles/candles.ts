@@ -1,21 +1,16 @@
 import { TickExtended } from '../../binance/model';
+import { getNextDownCount, getNextUpCount, prevBuy, prevSell, sell } from './helpers';
+import { CandleCombination, CandleStatistics } from './model';
 import {
-  aggregateAvgWinPerCandle,
+  aggregateAvgWinPerCycle,
   aggregateCurrentWin,
   aggregateHits,
-  aggregateMaxWinPerCandle,
-  aggregateMinWinPerCandle,
+  aggregateMaxWinPerCycle,
+  aggregateMinWinPerCycle,
   aggregateTotalWin,
-  buy,
-  getNextDownCount,
-  getNextUpCount,
   getWin,
-  isUp,
-  prevBuy,
-  prevSell,
-  sell
-} from './helpers';
-import { CandleCombination, CandleStatistics } from './model';
+  isUp
+} from '../helpers';
 
 export function aggregateCandleStatistics(candleStatistics: CandleStatistics, tick: TickExtended, candleCombinations: CandleCombination[]): CandleStatistics {
   const statistics = candleStatistics[tick.symbol] || candleCombinations.map(cc => ({
@@ -34,16 +29,15 @@ export function aggregateCandleStatistics(candleStatistics: CandleStatistics, ti
     const win = getWin(tick);
     const pBuy = prevBuy(statistic);
     const pSell = prevSell(statistic);
-    const b = buy(up, statistic);
     const s = sell(!up, statistic);
-    const hits = aggregateHits(b, s, statistic);
-    const currentWin = aggregateCurrentWin(pBuy, pSell, b, s, win, statistic);
+    const hits = aggregateHits(pBuy, s, statistic);
+    const currentWin = aggregateCurrentWin(pBuy, pSell, s, win, statistic);
     const totalWin = aggregateTotalWin(pBuy, pSell, win, statistic);
-    const minWin = aggregateMinWinPerCandle(pBuy, pSell, win, statistic);
-    const avgWin = aggregateAvgWinPerCandle(pBuy, pSell, hits, totalWin, statistic);
-    const maxWin = aggregateMaxWinPerCandle(pBuy, pSell, win, statistic);
-    const upCount = getNextUpCount(b, s, up, statistic);
-    const downCount = getNextDownCount(b, s, !up, statistic);
+    const minWin = aggregateMinWinPerCycle(pBuy, pSell, win, statistic);
+    const avgWin = aggregateAvgWinPerCycle(pBuy, pSell, hits, totalWin, statistic);
+    const maxWin = aggregateMaxWinPerCycle(pBuy, pSell, win, statistic);
+    const upCount = getNextUpCount(pBuy, s, up, statistic);
+    const downCount = getNextDownCount(pBuy, s, !up, statistic);
     return {
       ...statistic,
       hits,
