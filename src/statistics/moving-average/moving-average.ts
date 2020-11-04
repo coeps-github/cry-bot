@@ -1,5 +1,5 @@
 import { TickExtended } from '../../binance/model';
-import { MovingAverageCombination, MovingAverageStatistics } from './model';
+import { MovingAverageCombination, MovingAverageStatisticsMap } from './model';
 import {
   aggregateAvgWinPerCycle,
   aggregateCurrentWin,
@@ -7,12 +7,17 @@ import {
   aggregateMaxWinPerCycle,
   aggregateMinWinPerCycle,
   aggregateTotalWin,
-  getWin
+  getNextDownCount,
+  getNextUpCount,
+  getWin,
+  prevBuy,
+  prevSell,
+  sell
 } from '../helpers';
-import { buy, sell } from './helpers';
 import { SMA } from 'trading-signals';
+import { smaIsUp } from './helpers';
 
-export function aggregateMovingAverageStatistics(movingAverageStatistics: MovingAverageStatistics, tick: TickExtended, movingAverageCombinations: MovingAverageCombination[]): MovingAverageStatistics {
+export function aggregateMovingAverageStatistics(movingAverageStatistics: MovingAverageStatisticsMap, tick: TickExtended, movingAverageCombinations: MovingAverageCombination[]): MovingAverageStatisticsMap {
   const statistics = movingAverageStatistics[tick.symbol] || movingAverageCombinations.map(mac => ({
     combination: mac,
     hits: 0,
@@ -21,22 +26,25 @@ export function aggregateMovingAverageStatistics(movingAverageStatistics: Moving
     minWin: 0,
     avgWin: 0,
     maxWin: 0,
-    smallSMA: new SMA(mac.small),
-    bigSMA: new SMA(mac.big)
+    upCount: 0,
+    downCount: 0,
+    sma: new SMA(mac.sma)
   }));
   const updatedStatistics = statistics.map(statistic => {
+    const up = smaIsUp(tick, statistic);
     const win = getWin(tick);
-    const pBuy = buy(statistic);
-    const pSell = sell(statistic);
-    statistic.smallSMA.update(tick.close);
-    statistic.bigSMA.update(tick.close);
-    const s = sell(statistic);
+    const pBuy = prevBuy(statistic);
+    const pSell = prevSell(statistic);
+    const s = sell(!up, statistic);
     const hits = aggregateHits(pBuy, s, statistic);
     const currentWin = aggregateCurrentWin(pBuy, pSell, s, win, statistic);
     const totalWin = aggregateTotalWin(pBuy, pSell, win, statistic);
     const minWin = aggregateMinWinPerCycle(pBuy, pSell, win, statistic);
     const avgWin = aggregateAvgWinPerCycle(pBuy, pSell, hits, totalWin, statistic);
     const maxWin = aggregateMaxWinPerCycle(pBuy, pSell, win, statistic);
+    const upCount = getNextUpCount(pBuy, s, up, statistic);
+    const downCount = getNextDownCount(pBuy, s, !up, statistic);
+    const sma = statistic.sma;
     return {
       ...statistic,
       hits,
@@ -44,7 +52,10 @@ export function aggregateMovingAverageStatistics(movingAverageStatistics: Moving
       totalWin,
       minWin,
       avgWin,
-      maxWin
+      maxWin,
+      upCount,
+      downCount,
+      sma
     };
   });
   return {

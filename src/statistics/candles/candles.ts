@@ -1,6 +1,4 @@
 import { TickExtended } from '../../binance/model';
-import { getNextDownCount, getNextUpCount, prevBuy, prevSell, sell } from './helpers';
-import { CandleCombination, CandleStatistics } from './model';
 import {
   aggregateAvgWinPerCycle,
   aggregateCurrentWin,
@@ -8,11 +6,17 @@ import {
   aggregateMaxWinPerCycle,
   aggregateMinWinPerCycle,
   aggregateTotalWin,
+  getNextDownCount,
+  getNextUpCount,
   getWin,
-  isUp
+  isUp,
+  prevBuy,
+  prevSell,
+  sell
 } from '../helpers';
+import { CountCombination, CountStatisticsMap } from '../model';
 
-export function aggregateCandleStatistics(candleStatistics: CandleStatistics, tick: TickExtended, candleCombinations: CandleCombination[]): CandleStatistics {
+export function aggregateCandleStatistics(candleStatistics: CountStatisticsMap, tick: TickExtended, candleCombinations: CountCombination[]): CountStatisticsMap {
   const statistics = candleStatistics[tick.symbol] || candleCombinations.map(cc => ({
     combination: cc,
     hits: 0,

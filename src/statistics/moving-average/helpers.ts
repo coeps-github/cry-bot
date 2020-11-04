@@ -1,30 +1,24 @@
-import { MovingAverageStatistic, MovingAverageStatistics } from './model';
+import { MovingAverageStatistic, MovingAverageStatisticsMap } from './model';
+import { Tick } from '../../binance/model';
 
-export function buy(prevMovingAverageStatistic: MovingAverageStatistic): boolean {
-  return prevMovingAverageStatistic.smallSMA.isStable && prevMovingAverageStatistic.bigSMA.isStable &&
-    prevMovingAverageStatistic.smallSMA.getResult().gte(prevMovingAverageStatistic.bigSMA.getResult());
+export function smaIsUp(tick: Tick, prevMovingAverageStatistic: MovingAverageStatistic): boolean {
+  const sma = prevMovingAverageStatistic.sma;
+  const prevValue = sma.isStable && sma.getResult();
+  sma.update(tick.close);
+  const currValue = sma.isStable && sma.getResult();
+  return prevValue && currValue && currValue.gte(prevValue);
 }
 
-export function sell(prevMovingAverageStatistic: MovingAverageStatistic): boolean {
-  return prevMovingAverageStatistic.smallSMA.isStable && prevMovingAverageStatistic.bigSMA.isStable &&
-    prevMovingAverageStatistic.smallSMA.getResult().lt(prevMovingAverageStatistic.bigSMA.getResult());
-}
-
-export function convertSmaToObject(movingAverageStatistics: MovingAverageStatistics): MovingAverageStatistics {
+export function convertSmaToObject(movingAverageStatistics: MovingAverageStatisticsMap): MovingAverageStatisticsMap {
   return Object.keys(movingAverageStatistics).reduce((mass, key) => {
     return {
       ...mass,
       [key]: movingAverageStatistics[key].map(mas => ({
         ...mas,
-        smallSMA: {
-          ...mas.smallSMA,
-          prices: (mas.smallSMA as any).prices.map((price: any) => price.toString()),
-          result: mas.smallSMA.isStable && mas.smallSMA.getResult().valueOf()
-        },
-        bigSMA: {
-          ...mas.bigSMA,
-          prices: (mas.bigSMA as any).prices.map((price: any) => price.toString()),
-          result: mas.bigSMA.isStable && mas.bigSMA.getResult().valueOf()
+        sma: {
+          ...mas.sma,
+          prices: (mas.sma as any).prices.map((price: any) => price.toString()),
+          result: mas.sma.isStable && mas.sma.getResult().valueOf()
         }
       }))
     };

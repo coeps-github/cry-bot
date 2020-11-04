@@ -1,17 +1,15 @@
-import { Statistic } from '../model';
+import { CountCombination, CountStatistic, CountStatisticsMap } from '../model';
 import { SMA } from 'trading-signals';
 
-export interface MovingAverageStatistics {
+export interface MovingAverageStatisticsMap extends CountStatisticsMap {
   readonly [key: string]: MovingAverageStatistic[];
 }
 
-export interface MovingAverageStatistic extends Statistic {
+export interface MovingAverageStatistic extends CountStatistic {
   readonly combination: MovingAverageCombination;
-  readonly smallSMA: SMA;
-  readonly bigSMA: SMA;
+  readonly sma: SMA;
 }
 
-export interface MovingAverageCombination extends Record<string, number> {
-  readonly small: number;
-  readonly big: number;
+export interface MovingAverageCombination extends CountCombination {
+  readonly sma: number;
 }
