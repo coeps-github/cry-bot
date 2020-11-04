@@ -1,10 +1,10 @@
 import { TickExtended } from '../../binance/model';
-import { aggregateMovingAverageStatistics } from './moving-average';
+import { aggregateMovingAverageCountStatistics } from './moving-average-count';
 import { convertSmaToObject } from './helpers';
 
-describe('statistics - moving-average', () => {
+describe('statistics - moving-average-count', () => {
 
-  describe('aggregateMovingAverageStatistics', () => {
+  describe('aggregateMovingAverageCountStatistics', () => {
 
     it('should start counting when only going up', () => {
       const ticks = [
@@ -22,6 +22,11 @@ describe('statistics - moving-average', () => {
           symbol: 'A',
           open: '3',
           close: '6'
+        },
+        {
+          symbol: 'A',
+          open: '6',
+          close: '10'
         }
       ] as TickExtended[];
       const combinations = [
@@ -35,47 +40,71 @@ describe('statistics - moving-average', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
             combination: {
-              up: 0, down: 0
+              up: 0, down: 0, sma: 2
             },
-            downCount: 0,
             hits: 0,
-            upCount: 3,
-            currentWin: 5,
-            totalWin: 5,
-            maxWin: 3,
+            upCount: 2,
+            downCount: 0,
+            currentWin: 4,
+            totalWin: 4,
+            maxWin: 4,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '6',
+                '10'
+              ],
+              result: '8'
+            }
           },
           {
             combination: {
-              up: 1, down: 1
+              up: 1, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 0,
-            upCount: 3,
-            currentWin: 5,
-            totalWin: 5,
-            maxWin: 3,
+            upCount: 2,
+            downCount: 0,
+            currentWin: 4,
+            totalWin: 4,
+            maxWin: 4,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '6',
+                '10'
+              ],
+              result: '8'
+            }
           },
           {
             combination: {
-              up: 2, down: 1
+              up: 2, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 0,
-            upCount: 3,
-            currentWin: 3,
-            totalWin: 3,
-            maxWin: 3,
+            upCount: 2,
+            downCount: 0,
+            currentWin: 0,
+            totalWin: 0,
+            maxWin: 0,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '6',
+                '10'
+              ],
+              result: '8'
+            }
           }
         ]
       });
@@ -83,6 +112,11 @@ describe('statistics - moving-average', () => {
 
     it('should not start counting when only going down', () => {
       const ticks = [
+        {
+          symbol: 'A',
+          open: '10',
+          close: '6'
+        },
         {
           symbol: 'A',
           open: '6',
@@ -110,47 +144,71 @@ describe('statistics - moving-average', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
             combination: {
-              up: 0, down: 0
+              up: 0, down: 0, sma: 2
             },
-            downCount: 0,
             hits: 0,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 0,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           },
           {
             combination: {
-              up: 1, down: 1
+              up: 1, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 0,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 0,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           },
           {
             combination: {
-              up: 2, down: 1
+              up: 2, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 0,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 0,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           }
         ]
       });
@@ -158,6 +216,11 @@ describe('statistics - moving-average', () => {
 
     it('should start counting when going down and then up', () => {
       const ticks = [
+        {
+          symbol: 'A',
+          open: '3',
+          close: '1'
+        },
         {
           symbol: 'A',
           open: '1',
@@ -185,47 +248,71 @@ describe('statistics - moving-average', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
             combination: {
-              up: 0, down: 0
+              up: 0, down: 0, sma: 2
             },
-            downCount: 0,
             hits: 0,
             upCount: 2,
+            downCount: 0,
             currentWin: 2,
             totalWin: 2,
             maxWin: 2,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '3'
+              ],
+              result: '2'
+            }
           },
           {
             combination: {
-              up: 1, down: 1
+              up: 1, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 0,
             upCount: 2,
+            downCount: 0,
             currentWin: 2,
             totalWin: 2,
             maxWin: 2,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '3'
+              ],
+              result: '2'
+            }
           },
           {
             combination: {
-              up: 2, down: 1
+              up: 2, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 0,
             upCount: 2,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 0,
             minWin: 0,
-            avgWin: 0
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '3'
+              ],
+              result: '2'
+            }
           }
         ]
       });
@@ -247,6 +334,11 @@ describe('statistics - moving-average', () => {
           symbol: 'A',
           open: '3',
           close: '1'
+        },
+        {
+          symbol: 'A',
+          open: '1',
+          close: '0'
         }
       ] as TickExtended[];
       const combinations = [
@@ -260,47 +352,71 @@ describe('statistics - moving-average', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
             combination: {
-              up: 0, down: 0
+              up: 0, down: 0, sma: 2
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 2,
-            minWin: -2,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 1, down: 1
-            },
             downCount: 0,
-            hits: 1,
-            upCount: 0,
             currentWin: 0,
-            totalWin: 0,
-            maxWin: 2,
-            minWin: -2,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 2, down: 1
-            },
-            downCount: 0,
-            hits: 1,
-            upCount: 0,
-            currentWin: 0,
-            totalWin: -2,
+            totalWin: -1,
             maxWin: 0,
-            minWin: -2,
-            avgWin: -2
+            minWin: -1,
+            avgWin: -1,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
+          },
+          {
+            combination: {
+              up: 1, down: 1, sma: 2
+            },
+            hits: 1,
+            upCount: 0,
+            downCount: 0,
+            currentWin: 0,
+            totalWin: -1,
+            maxWin: 0,
+            minWin: -1,
+            avgWin: -1,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
+          },
+          {
+            combination: {
+              up: 2, down: 1, sma: 2
+            },
+            hits: 0,
+            upCount: 0,
+            downCount: 0,
+            currentWin: 0,
+            totalWin: 0,
+            maxWin: 0,
+            minWin: 0,
+            avgWin: 0,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           }
         ]
       });
@@ -317,6 +433,16 @@ describe('statistics - moving-average', () => {
         {
           symbol: 'A',
           open: '1',
+          close: '3'
+        },
+        {
+          symbol: 'A',
+          open: '3',
+          close: '6'
+        },
+        {
+          symbol: 'A',
+          open: '6',
           close: '3'
         },
         {
@@ -341,47 +467,71 @@ describe('statistics - moving-average', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
             combination: {
-              up: 0, down: 0
+              up: 0, down: 0, sma: 2
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
-            totalWin: 0,
-            maxWin: 2,
-            minWin: -2,
-            avgWin: 0
+            totalWin: -5,
+            maxWin: 0,
+            minWin: -3,
+            avgWin: -5,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           },
           {
             combination: {
-              up: 1, down: 1
+              up: 1, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
-            totalWin: 0,
-            maxWin: 2,
-            minWin: -2,
-            avgWin: 0
+            totalWin: -5,
+            maxWin: 0,
+            minWin: -3,
+            avgWin: -5,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           },
           {
             combination: {
-              up: 2, down: 1
+              up: 2, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: -2,
             maxWin: 0,
             minWin: -2,
-            avgWin: -2
+            avgWin: -2,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           }
         ]
       });
@@ -433,6 +583,11 @@ describe('statistics - moving-average', () => {
           symbol: 'A',
           open: '3',
           close: '1'
+        },
+        {
+          symbol: 'A',
+          open: '1',
+          close: '0'
         }
       ] as TickExtended[];
       const combinations = [
@@ -446,47 +601,71 @@ describe('statistics - moving-average', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
             combination: {
-              up: 0, down: 0
+              up: 0, down: 0, sma: 2
             },
-            downCount: 0,
             hits: 2,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
-            totalWin: 2,
+            totalWin: -1,
             maxWin: 3,
             minWin: -3,
-            avgWin: 1
+            avgWin: -0.5,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           },
           {
             combination: {
-              up: 1, down: 1
+              up: 1, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 2,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
-            totalWin: 2,
+            totalWin: -1,
             maxWin: 3,
             minWin: -3,
-            avgWin: 1
+            avgWin: -0.5,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           },
           {
             combination: {
-              up: 2, down: 1
+              up: 2, down: 1, sma: 2
             },
-            downCount: 0,
-            hits: 2,
+            hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: -2,
             maxWin: 3,
             minWin: -3,
-            avgWin: -1
+            avgWin: -2,
+            sma: {
+              interval: 2,
+              prices: [
+                '1',
+                '0'
+              ],
+              result: '0.5'
+            }
           }
         ]
       });
@@ -548,6 +727,11 @@ describe('statistics - moving-average', () => {
           symbol: 'A',
           open: '3',
           close: '6'
+        },
+        {
+          symbol: 'A',
+          open: '6',
+          close: '10'
         }
       ] as TickExtended[];
       const combinations = [
@@ -561,47 +745,71 @@ describe('statistics - moving-average', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
             combination: {
-              up: 0, down: 0
+              up: 0, down: 0, sma: 2
             },
-            downCount: 0,
             hits: 2,
-            upCount: 2,
-            currentWin: 3,
-            totalWin: 5,
-            maxWin: 3,
+            upCount: 3,
+            downCount: 0,
+            currentWin: 7,
+            totalWin: 6,
+            maxWin: 4,
             minWin: -3,
-            avgWin: 2.5
+            avgWin: 3,
+            sma: {
+              interval: 2,
+              prices: [
+                '6',
+                '10'
+              ],
+              result: '8'
+            }
           },
           {
             combination: {
-              up: 1, down: 1
+              up: 1, down: 1, sma: 2
             },
-            downCount: 0,
             hits: 2,
-            upCount: 2,
-            currentWin: 3,
-            totalWin: 5,
-            maxWin: 3,
+            upCount: 3,
+            downCount: 0,
+            currentWin: 7,
+            totalWin: 6,
+            maxWin: 4,
             minWin: -3,
-            avgWin: 2.5
+            avgWin: 3,
+            sma: {
+              interval: 2,
+              prices: [
+                '6',
+                '10'
+              ],
+              result: '8'
+            }
           },
           {
             combination: {
-              up: 2, down: 1
+              up: 2, down: 1, sma: 2
             },
+            hits: 1,
+            upCount: 3,
             downCount: 0,
-            hits: 2,
-            upCount: 2,
-            currentWin: 0,
-            totalWin: -2,
-            maxWin: 3,
+            currentWin: 4,
+            totalWin: 2,
+            maxWin: 4,
             minWin: -3,
-            avgWin: -1
+            avgWin: 2,
+            sma: {
+              interval: 2,
+              prices: [
+                '6',
+                '10'
+              ],
+              result: '8'
+            }
           }
         ]
       });

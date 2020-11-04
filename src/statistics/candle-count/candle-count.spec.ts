@@ -1,9 +1,9 @@
 import { TickExtended } from '../../binance/model';
-import { aggregateCandleStatistics } from './candles';
+import { aggregateCandleCountStatistics } from './candle-count';
 
-describe('statistics - candles', () => {
+describe('statistics - candle-count', () => {
 
-  describe('aggregateCandleStatistics', () => {
+  describe('aggregateCandleCountStatistics', () => {
 
     it('should start counting when only going up', () => {
       const ticks = [
@@ -34,16 +34,16 @@ describe('statistics - candles', () => {
           up: 2, down: 1
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateCandleStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateCandleCountStatistics(statistics, tick, combinations), {});
       expect(result).toEqual({
         A: [
           {
             combination: {
               up: 0, down: 0
             },
-            downCount: 0,
             hits: 0,
             upCount: 3,
+            downCount: 0,
             currentWin: 5,
             totalWin: 5,
             maxWin: 3,
@@ -54,9 +54,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 1, down: 1
             },
-            downCount: 0,
             hits: 0,
             upCount: 3,
+            downCount: 0,
             currentWin: 5,
             totalWin: 5,
             maxWin: 3,
@@ -67,9 +67,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 2, down: 1
             },
-            downCount: 0,
             hits: 0,
             upCount: 3,
+            downCount: 0,
             currentWin: 3,
             totalWin: 3,
             maxWin: 3,
@@ -109,16 +109,16 @@ describe('statistics - candles', () => {
           up: 2, down: 1
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateCandleStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateCandleCountStatistics(statistics, tick, combinations), {});
       expect(result).toEqual({
         A: [
           {
             combination: {
               up: 0, down: 0
             },
-            downCount: 0,
             hits: 0,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 0,
@@ -129,9 +129,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 1, down: 1
             },
-            downCount: 0,
             hits: 0,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 0,
@@ -142,9 +142,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 2, down: 1
             },
-            downCount: 0,
             hits: 0,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 0,
@@ -184,16 +184,16 @@ describe('statistics - candles', () => {
           up: 2, down: 1
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateCandleStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateCandleCountStatistics(statistics, tick, combinations), {});
       expect(result).toEqual({
         A: [
           {
             combination: {
               up: 0, down: 0
             },
-            downCount: 0,
             hits: 0,
             upCount: 2,
+            downCount: 0,
             currentWin: 2,
             totalWin: 2,
             maxWin: 2,
@@ -204,9 +204,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 1, down: 1
             },
-            downCount: 0,
             hits: 0,
             upCount: 2,
+            downCount: 0,
             currentWin: 2,
             totalWin: 2,
             maxWin: 2,
@@ -217,9 +217,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 2, down: 1
             },
-            downCount: 0,
             hits: 0,
             upCount: 2,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 0,
@@ -259,16 +259,16 @@ describe('statistics - candles', () => {
           up: 2, down: 1
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateCandleStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateCandleCountStatistics(statistics, tick, combinations), {});
       expect(result).toEqual({
         A: [
           {
             combination: {
               up: 0, down: 0
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 2,
@@ -279,9 +279,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 1, down: 1
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 2,
@@ -292,9 +292,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 2, down: 1
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: -2,
             maxWin: 0,
@@ -340,16 +340,16 @@ describe('statistics - candles', () => {
           up: 2, down: 1
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateCandleStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateCandleCountStatistics(statistics, tick, combinations), {});
       expect(result).toEqual({
         A: [
           {
             combination: {
               up: 0, down: 0
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 2,
@@ -360,9 +360,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 1, down: 1
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 0,
             maxWin: 2,
@@ -373,9 +373,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 2, down: 1
             },
-            downCount: 0,
             hits: 1,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: -2,
             maxWin: 0,
@@ -445,16 +445,16 @@ describe('statistics - candles', () => {
           up: 2, down: 1
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateCandleStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateCandleCountStatistics(statistics, tick, combinations), {});
       expect(result).toEqual({
         A: [
           {
             combination: {
               up: 0, down: 0
             },
-            downCount: 0,
             hits: 2,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 2,
             maxWin: 3,
@@ -465,9 +465,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 1, down: 1
             },
-            downCount: 0,
             hits: 2,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: 2,
             maxWin: 3,
@@ -478,9 +478,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 2, down: 1
             },
-            downCount: 0,
             hits: 2,
             upCount: 0,
+            downCount: 0,
             currentWin: 0,
             totalWin: -2,
             maxWin: 3,
@@ -560,16 +560,16 @@ describe('statistics - candles', () => {
           up: 2, down: 1
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateCandleStatistics(statistics, tick, combinations), {});
+      const result = ticks.reduce((statistics, tick) => aggregateCandleCountStatistics(statistics, tick, combinations), {});
       expect(result).toEqual({
         A: [
           {
             combination: {
               up: 0, down: 0
             },
-            downCount: 0,
             hits: 2,
             upCount: 2,
+            downCount: 0,
             currentWin: 3,
             totalWin: 5,
             maxWin: 3,
@@ -580,9 +580,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 1, down: 1
             },
-            downCount: 0,
             hits: 2,
             upCount: 2,
+            downCount: 0,
             currentWin: 3,
             totalWin: 5,
             maxWin: 3,
@@ -593,9 +593,9 @@ describe('statistics - candles', () => {
             combination: {
               up: 2, down: 1
             },
-            downCount: 0,
             hits: 2,
             upCount: 2,
+            downCount: 0,
             currentWin: 0,
             totalWin: -2,
             maxWin: 3,

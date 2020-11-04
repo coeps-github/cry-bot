@@ -1,5 +1,5 @@
 import { TickExtended } from '../../binance/model';
-import { MovingAverageCombination, MovingAverageStatisticsMap } from './model';
+import { MovingAverageCountCombination, MovingAverageCountStatisticsMap } from './model';
 import {
   aggregateAvgWinPerCycle,
   aggregateCurrentWin,
@@ -15,10 +15,10 @@ import {
   sell
 } from '../helpers';
 import { SMA } from 'trading-signals';
-import { smaIsUp } from './helpers';
+import { updateSmaAndReturnIsUp } from './helpers';
 
-export function aggregateMovingAverageStatistics(movingAverageStatistics: MovingAverageStatisticsMap, tick: TickExtended, movingAverageCombinations: MovingAverageCombination[]): MovingAverageStatisticsMap {
-  const statistics = movingAverageStatistics[tick.symbol] || movingAverageCombinations.map(mac => ({
+export function aggregateMovingAverageCountStatistics(movingAverageCountStatistics: MovingAverageCountStatisticsMap, tick: TickExtended, movingAverageCountCombinations: MovingAverageCountCombination[]): MovingAverageCountStatisticsMap {
+  const statistics = movingAverageCountStatistics[tick.symbol] || movingAverageCountCombinations.map(mac => ({
     combination: mac,
     hits: 0,
     currentWin: 0,
@@ -31,7 +31,7 @@ export function aggregateMovingAverageStatistics(movingAverageStatistics: Moving
     sma: new SMA(mac.sma)
   }));
   const updatedStatistics = statistics.map(statistic => {
-    const up = smaIsUp(tick, statistic);
+    const up = updateSmaAndReturnIsUp(tick, statistic);
     const win = getWin(tick);
     const pBuy = prevBuy(statistic);
     const pSell = prevSell(statistic);
@@ -59,7 +59,7 @@ export function aggregateMovingAverageStatistics(movingAverageStatistics: Moving
     };
   });
   return {
-    ...movingAverageStatistics,
+    ...movingAverageCountStatistics,
     [tick.symbol]: updatedStatistics
   };
 }

@@ -16,8 +16,8 @@ import {
 } from '../helpers';
 import { CountCombination, CountStatisticsMap } from '../model';
 
-export function aggregateCandleStatistics(candleStatistics: CountStatisticsMap, tick: TickExtended, candleCombinations: CountCombination[]): CountStatisticsMap {
-  const statistics = candleStatistics[tick.symbol] || candleCombinations.map(cc => ({
+export function aggregateCandleCountStatistics(candleCountStatistics: CountStatisticsMap, tick: TickExtended, candleCountCombinations: CountCombination[]): CountStatisticsMap {
+  const statistics = candleCountStatistics[tick.symbol] || candleCountCombinations.map(cc => ({
     combination: cc,
     hits: 0,
     currentWin: 0,
@@ -55,7 +55,7 @@ export function aggregateCandleStatistics(candleStatistics: CountStatisticsMap, 
     };
   });
   return {
-    ...candleStatistics,
+    ...candleCountStatistics,
     [tick.symbol]: updatedStatistics
   };
 }

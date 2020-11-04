@@ -1,4 +1,4 @@
-describe('statistics - moving-average', () => {
+describe('statistics - moving-average-count', () => {
 
   describe('helpers', () => {
 

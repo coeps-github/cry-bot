@@ -1,7 +1,7 @@
-import { MovingAverageStatistic, MovingAverageStatisticsMap } from './model';
+import { MovingAverageCountStatistic, MovingAverageCountStatisticsMap } from './model';
 import { Tick } from '../../binance/model';
 
-export function smaIsUp(tick: Tick, prevMovingAverageStatistic: MovingAverageStatistic): boolean {
+export function updateSmaAndReturnIsUp(tick: Tick, prevMovingAverageStatistic: MovingAverageCountStatistic): boolean {
   const sma = prevMovingAverageStatistic.sma;
   const prevValue = sma.isStable && sma.getResult();
   sma.update(tick.close);
@@ -9,7 +9,7 @@ export function smaIsUp(tick: Tick, prevMovingAverageStatistic: MovingAverageSta
   return prevValue && currValue && currValue.gte(prevValue);
 }
 
-export function convertSmaToObject(movingAverageStatistics: MovingAverageStatisticsMap): MovingAverageStatisticsMap {
+export function convertSmaToObject(movingAverageStatistics: MovingAverageCountStatisticsMap): MovingAverageCountStatisticsMap {
   return Object.keys(movingAverageStatistics).reduce((mass, key) => {
     return {
       ...mass,

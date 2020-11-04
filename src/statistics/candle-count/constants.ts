@@ -1,6 +1,6 @@
 import { CountCombination } from '../model';
 
-export const defaultCandleCombinations: CountCombination[] = [
+export const defaultCandleCountCombinations: CountCombination[] = [
   { up: 1, down: 1 },
   { up: 2, down: 1 },
   { up: 3, down: 1 },

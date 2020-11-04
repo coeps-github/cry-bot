@@ -1,24 +1,24 @@
 import { Binance, Period } from '../binance/model';
 import { Statistics } from './model';
 import { scan } from 'rxjs/operators';
-import { defaultCandleCombinations } from './candles/constants';
-import { aggregateCandleStatistics } from './candles/candles';
-import { defaultMovingAverageCombinations } from './moving-average/constants';
-import { aggregateMovingAverageStatistics } from './moving-average/moving-average';
+import { defaultCandleCountCombinations } from './candle-count/constants';
+import { aggregateCandleCountStatistics } from './candle-count/candle-count';
+import { defaultMovingAverageCombinations } from './moving-average-count/constants';
+import { aggregateMovingAverageCountStatistics } from './moving-average-count/moving-average-count';
 
 export function getStatistics(binance: Binance): Statistics {
   return {
-    analyzeCandles: (symbols = ['BTCUSDT'], period: Period = '1m', candleCombinations = defaultCandleCombinations) => {
+    analyzeCandleCount: (symbols = ['BTCUSDT'], period: Period = '1m', candleCombinations = defaultCandleCountCombinations) => {
       return binance.getTicks(symbols, period).pipe(
         scan((candleStatistics, tick) => {
-          return aggregateCandleStatistics(candleStatistics, tick, candleCombinations);
+          return aggregateCandleCountStatistics(candleStatistics, tick, candleCombinations);
         }, {})
       );
     },
-    analyzeMovingAverage: (symbols = ['BTCUSDT'], period: Period = '1m', movingAverageCombinations = defaultMovingAverageCombinations) => {
+    analyzeMovingAverageCount: (symbols = ['BTCUSDT'], period: Period = '1m', movingAverageCombinations = defaultMovingAverageCombinations) => {
       return binance.getTicks(symbols, period).pipe(
         scan((movingAverageStatistics, tick) => {
-          return aggregateMovingAverageStatistics(movingAverageStatistics, tick, movingAverageCombinations);
+          return aggregateMovingAverageCountStatistics(movingAverageStatistics, tick, movingAverageCombinations);
         }, {})
       );
     }

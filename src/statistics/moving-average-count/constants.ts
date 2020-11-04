@@ -1,6 +1,6 @@
-import { MovingAverageCombination } from './model';
+import { MovingAverageCountCombination } from './model';
 
-export const defaultMovingAverageCombinations: MovingAverageCombination[] = [
+export const defaultMovingAverageCombinations: MovingAverageCountCombination[] = [
   { up: 1, down: 1, sma: 5 },
   { up: 2, down: 1, sma: 5 },
   { up: 3, down: 1, sma: 5 },
