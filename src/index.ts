@@ -6,11 +6,11 @@ const config = getConfig();
 const binance = getBinance(config.binance);
 const statistics = getStatistics(binance);
 
-// statistics.analyzeCandleCount(['BTCUSDT', 'ETHUSDT'], '1m')
-//   .subscribe(statistics => console.log(Object.keys(statistics).map(key => JSON.stringify(statistics[key])).join('\n')));
+statistics.analyzeCandleCount(['BTCUSDT'], '1m')
+  .subscribe(statistics => console.log(Object.keys(statistics).map(key => JSON.stringify(statistics[key])).join('\n')));
 
-statistics.analyzeMovingAverageCount(['BTCUSDT', 'ETHUSDT'], '1m')
+statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m')
   .subscribe(statistics => console.log(Object.keys(statistics)
     .map(key => JSON.stringify(statistics[key]
-      .map(statistic => ({ ...statistic, smallSMA: {}, bigSMA: {} }))))
+      .map(statistic => ({ ...statistic, sma: {} }))))
     .join('\n')));
