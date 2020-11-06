@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
-import { Period } from '../binance/model';
+import { CandleStickHistoryOptions, Period } from '../binance/model';
 import { MovingAverageCountCombination, MovingAverageCountStatisticsMap } from './moving-average-count/model';
 
 export interface Statistics {
-  readonly analyzeCandleCount: (symbols?: string[], period?: Period, candleCombinations?: CountCombination[]) => Observable<CountStatisticsMap>;
-  readonly analyzeMovingAverageCount: (symbols?: string[], period?: Period, movingAverageCombinations?: MovingAverageCountCombination[]) => Observable<MovingAverageCountStatisticsMap>;
+  readonly analyzeCandleCount: (symbols?: string[], period?: Period, options?: CandleStickHistoryOptions, candleCombinations?: CountCombination[]) => Observable<CountStatisticsMap>;
+  readonly analyzeMovingAverageCount: (symbols?: string[], period?: Period, options?: CandleStickHistoryOptions, movingAverageCombinations?: MovingAverageCountCombination[]) => Observable<MovingAverageCountStatisticsMap>;
 }
 
 export interface StatisticsMap {

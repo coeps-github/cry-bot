@@ -1,4 +1,3 @@
-import { TickExtended } from '../../binance/model';
 import { MovingAverageCountCombination, MovingAverageCountStatisticsMap } from './model';
 import {
   aggregateAvgWinPerCycle,
@@ -16,9 +15,10 @@ import {
 } from '../helpers';
 import { SMA } from 'trading-signals';
 import { updateSmaAndReturnIsUp } from './helpers';
+import { CandleStickWrapper } from '../../binance/model';
 
-export function aggregateMovingAverageCountStatistics(movingAverageCountStatistics: MovingAverageCountStatisticsMap, tick: TickExtended, movingAverageCountCombinations: MovingAverageCountCombination[]): MovingAverageCountStatisticsMap {
-  const statistics = movingAverageCountStatistics[tick.symbol] || movingAverageCountCombinations.map(mac => ({
+export function aggregateMovingAverageCountStatistics(movingAverageCountStatistics: MovingAverageCountStatisticsMap, candleStick: CandleStickWrapper, movingAverageCountCombinations: MovingAverageCountCombination[]): MovingAverageCountStatisticsMap {
+  const statistics = movingAverageCountStatistics[candleStick.symbol] || movingAverageCountCombinations.map(mac => ({
     combination: mac,
     hits: 0,
     currentWin: 0,
@@ -31,8 +31,8 @@ export function aggregateMovingAverageCountStatistics(movingAverageCountStatisti
     sma: new SMA(mac.sma)
   }));
   const updatedStatistics = statistics.map(statistic => {
-    const up = updateSmaAndReturnIsUp(tick, statistic);
-    const win = getWin(tick);
+    const up = updateSmaAndReturnIsUp(candleStick.tick, statistic);
+    const win = getWin(candleStick.tick);
     const pBuy = prevBuy(statistic);
     const pSell = prevSell(statistic);
     const s = sell(!up, statistic);
@@ -60,6 +60,6 @@ export function aggregateMovingAverageCountStatistics(movingAverageCountStatisti
   });
   return {
     ...movingAverageCountStatistics,
-    [tick.symbol]: updatedStatistics
+    [candleStick.symbol]: updatedStatistics
   };
 }

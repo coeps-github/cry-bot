@@ -1,4 +1,4 @@
-import { Binance, Period } from '../binance/model';
+import { Binance, CandleStickHistoryOptions, Period } from '../binance/model';
 import { Statistics } from './model';
 import { scan } from 'rxjs/operators';
 import { defaultCandleCountCombinations } from './candle-count/constants';
@@ -8,17 +8,27 @@ import { aggregateMovingAverageCountStatistics } from './moving-average-count/mo
 
 export function getStatistics(binance: Binance): Statistics {
   return {
-    analyzeCandleCount: (symbols = ['BTCUSDT'], period: Period = '1m', candleCombinations = defaultCandleCountCombinations) => {
-      return binance.getTicks(symbols, period).pipe(
-        scan((candleStatistics, tick) => {
-          return aggregateCandleCountStatistics(candleStatistics, tick, candleCombinations);
+    analyzeCandleCount: (
+      symbols = ['BTCUSDT'],
+      period: Period = '1m',
+      options: CandleStickHistoryOptions = { finalOnly: true, limit: 999999999 },
+      candleCombinations = defaultCandleCountCombinations
+    ) => {
+      return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
+        scan((candleStatistics, candleStick) => {
+          return aggregateCandleCountStatistics(candleStatistics, candleStick, candleCombinations);
         }, {})
       );
     },
-    analyzeMovingAverageCount: (symbols = ['BTCUSDT'], period: Period = '1m', movingAverageCombinations = defaultMovingAverageCombinations) => {
-      return binance.getTicks(symbols, period).pipe(
-        scan((movingAverageStatistics, tick) => {
-          return aggregateMovingAverageCountStatistics(movingAverageStatistics, tick, movingAverageCombinations);
+    analyzeMovingAverageCount: (
+      symbols = ['BTCUSDT'],
+      period: Period = '1m',
+      options: CandleStickHistoryOptions = { finalOnly: true, limit: 999999999 },
+      movingAverageCombinations = defaultMovingAverageCombinations
+    ) => {
+      return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
+        scan((movingAverageStatistics, candleStick) => {
+          return aggregateMovingAverageCountStatistics(movingAverageStatistics, candleStick, movingAverageCombinations);
         }, {})
       );
     }

@@ -7,8 +7,9 @@ export interface BinanceConfig {
 
 export interface Binance {
   readonly getChart: (symbol?: string, period?: Period) => Observable<ChartExtended>;
-  readonly getCandleSticks: (symbols?: string[], period?: Period, finalOnly?: boolean) => Observable<CandleSticks>;
-  readonly getTicks: (symbols?: string[], period?: Period) => Observable<TickExtended>;
+  readonly getCandleStickHistory: (symbol?: string, period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper>
+  readonly getCandleSticks: (symbols?: string[], period?: Period, options?: CandleStickOptions) => Observable<CandleStickWrapper>;
+  readonly getCandleSticksWithHistory: (symbols?: string[], period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper>;
 }
 
 export type Period =
@@ -28,35 +29,49 @@ export type Period =
   | '1w'
   | '1M';
 
-export interface CandleSticksShort {
-  readonly e: string;
-  readonly E: number;
-  readonly s: string;
-  readonly k: TicksShort;
+export interface ChartExtended extends ChartWrapper {
+  readonly lastTickTime: string;
+  readonly lastTick: Tick;
 }
 
-export interface TickShort {
-  readonly o: string;
-  readonly h: string;
-  readonly l: string;
-  readonly c: string;
-  readonly v: string;
-}
-
-export interface TicksShort extends TickShort {
-  readonly n: number;
-  readonly i: string;
-  readonly x: boolean;
-  readonly q: string;
-  readonly V: string;
-  readonly Q: string;
-}
-
-export interface CandleSticks {
-  readonly eventType: string;
-  readonly eventTime: number;
+export interface ChartWrapper {
   readonly symbol: string;
-  readonly ticks: Ticks;
+  readonly interval: string;
+  readonly chart: Chart;
+}
+
+export interface Chart {
+  readonly [key: string]: Tick;
+}
+
+export interface CandleStickHistoryOptions extends CandleStickOptions {
+  readonly limit?: number;
+  readonly startTime?: number;
+  readonly endTime?: number;
+}
+
+export interface CandleStickOptions {
+  readonly finalOnly?: boolean;
+}
+
+export interface CandleStickWrapper {
+  readonly symbol: string;
+  readonly interval: string;
+  readonly tick: TickEvent;
+}
+
+export interface TickEvent extends TickMarket {
+  readonly eventType?: string;
+  readonly eventTime: number;
+  readonly closeTime?: number;
+  readonly isFinal: boolean;
+}
+
+export interface TickMarket extends Tick {
+  readonly trades: number;
+  readonly quoteVolume: string;
+  readonly buyVolume: string;
+  readonly quoteBuyVolume: string;
 }
 
 export interface Tick {
@@ -67,34 +82,36 @@ export interface Tick {
   readonly volume: string;
 }
 
-export interface TickFinal extends Tick {
-  readonly isFinal: boolean;
-}
-
-export interface Ticks extends TickFinal {
+export interface CandleStickHistoryAPI extends Tick {
+  readonly time: number;
+  readonly closeTime: number;
   readonly trades: number;
-  readonly interval: string;
-  readonly quoteVolume: string;
-  readonly buyVolume: string;
-  readonly quoteBuyVolume: string;
+  readonly assetVolume: string;
+  readonly buyBaseVolume: string;
+  readonly buyAssetVolume: string;
+  readonly ignored: boolean;
 }
 
-export interface TickExtended extends TickFinal {
-  readonly eventTime: number;
-  readonly symbol: string;
+export interface CandleStickWrapperAPI {
+  readonly e: string;
+  readonly E: number;
+  readonly s: string;
+  readonly k: TickMarketAPI;
 }
 
-export interface Chart {
-  readonly [key: string]: Tick;
+export interface TickMarketAPI extends TickAPI {
+  readonly n: number;
+  readonly i: string;
+  readonly x: boolean;
+  readonly q: string;
+  readonly V: string;
+  readonly Q: string;
 }
 
-export interface ChartWrapper {
-  readonly symbol: string;
-  readonly interval: string;
-  readonly chart: Chart;
-}
-
-export interface ChartExtended extends ChartWrapper {
-  readonly lastTickTime: string;
-  readonly lastTick: Tick;
+export interface TickAPI {
+  readonly o: string;
+  readonly h: string;
+  readonly l: string;
+  readonly c: string;
+  readonly v: string;
 }

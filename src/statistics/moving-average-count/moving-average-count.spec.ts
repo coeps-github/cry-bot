@@ -1,34 +1,42 @@
-import { TickExtended } from '../../binance/model';
 import { aggregateMovingAverageCountStatistics } from './moving-average-count';
 import { convertSmaToObject } from './helpers';
+import { CandleStickWrapper } from '../../binance/model';
 
 describe('statistics - moving-average-count', () => {
 
   describe('aggregateMovingAverageCountStatistics', () => {
 
     it('should start counting when only going up', () => {
-      const ticks = [
+      const candleSticks = [
         {
           symbol: 'A',
-          open: '0',
-          close: '1'
+          tick: {
+            open: '0',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '6'
+          tick: {
+            open: '3',
+            close: '6'
+          }
         },
         {
           symbol: 'A',
-          open: '6',
-          close: '10'
+          tick: {
+            open: '6',
+            close: '10'
+          }
         }
-      ] as TickExtended[];
+      ] as CandleStickWrapper[];
       const combinations = [
         {
           up: 0, down: 0, sma: 2
@@ -40,7 +48,7 @@ describe('statistics - moving-average-count', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
+      const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
@@ -111,28 +119,36 @@ describe('statistics - moving-average-count', () => {
     });
 
     it('should not start counting when only going down', () => {
-      const ticks = [
+      const candleSticks = [
         {
           symbol: 'A',
-          open: '10',
-          close: '6'
+          tick: {
+            open: '10',
+            close: '6'
+          }
         },
         {
           symbol: 'A',
-          open: '6',
-          close: '3'
+          tick: {
+            open: '6',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '1'
+          tick: {
+            open: '3',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '0'
+          tick: {
+            open: '1',
+            close: '0'
+          }
         }
-      ] as TickExtended[];
+      ] as CandleStickWrapper[];
       const combinations = [
         {
           up: 0, down: 0, sma: 2
@@ -144,7 +160,7 @@ describe('statistics - moving-average-count', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
+      const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
@@ -215,28 +231,36 @@ describe('statistics - moving-average-count', () => {
     });
 
     it('should start counting when going down and then up', () => {
-      const ticks = [
+      const candleSticks = [
         {
           symbol: 'A',
-          open: '3',
-          close: '1'
+          tick: {
+            open: '3',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '0'
+          tick: {
+            open: '1',
+            close: '0'
+          }
         },
         {
           symbol: 'A',
-          open: '0',
-          close: '1'
+          tick: {
+            open: '0',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         }
-      ] as TickExtended[];
+      ] as CandleStickWrapper[];
       const combinations = [
         {
           up: 0, down: 0, sma: 2
@@ -248,7 +272,7 @@ describe('statistics - moving-average-count', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
+      const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
@@ -319,28 +343,36 @@ describe('statistics - moving-average-count', () => {
     });
 
     it('should start counting when going up and then down', () => {
-      const ticks = [
+      const candleSticks = [
         {
           symbol: 'A',
-          open: '0',
-          close: '1'
+          tick: {
+            open: '0',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '1'
+          tick: {
+            open: '3',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '0'
+          tick: {
+            open: '1',
+            close: '0'
+          }
         }
-      ] as TickExtended[];
+      ] as CandleStickWrapper[];
       const combinations = [
         {
           up: 0, down: 0, sma: 2
@@ -352,7 +384,7 @@ describe('statistics - moving-average-count', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
+      const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
@@ -424,38 +456,50 @@ describe('statistics - moving-average-count', () => {
     });
 
     it('should stop counting when going up and then down', () => {
-      const ticks = [
+      const candleSticks = [
         {
           symbol: 'A',
-          open: '0',
-          close: '1'
+          tick: {
+            open: '0',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '6'
+          tick: {
+            open: '3',
+            close: '6'
+          }
         },
         {
           symbol: 'A',
-          open: '6',
-          close: '3'
+          tick: {
+            open: '6',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '1'
+          tick: {
+            open: '3',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '0'
+          tick: {
+            open: '1',
+            close: '0'
+          }
         }
-      ] as TickExtended[];
+      ] as CandleStickWrapper[];
       const combinations = [
         {
           up: 0, down: 0, sma: 2
@@ -467,7 +511,7 @@ describe('statistics - moving-average-count', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
+      const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
@@ -538,58 +582,78 @@ describe('statistics - moving-average-count', () => {
     });
 
     it('should continuously start and stop counting when going up and down multiple times', () => {
-      const ticks = [
+      const candleSticks = [
         {
           symbol: 'A',
-          open: '0',
-          close: '1'
+          tick: {
+            open: '0',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '1'
+          tick: {
+            open: '3',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '0'
+          tick: {
+            open: '1',
+            close: '0'
+          }
         },
         {
           symbol: 'A',
-          open: '0',
-          close: '1'
+          tick: {
+            open: '0',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '6'
+          tick: {
+            open: '3',
+            close: '6'
+          }
         },
         {
           symbol: 'A',
-          open: '6',
-          close: '3'
+          tick: {
+            open: '6',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '1'
+          tick: {
+            open: '3',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '0'
+          tick: {
+            open: '1',
+            close: '0'
+          }
         }
-      ] as TickExtended[];
+      ] as CandleStickWrapper[];
       const combinations = [
         {
           up: 0, down: 0, sma: 2
@@ -601,7 +665,7 @@ describe('statistics - moving-average-count', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
+      const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {
@@ -672,68 +736,92 @@ describe('statistics - moving-average-count', () => {
     });
 
     it('should continuously start and stop counting when going up and down multiple times and have counts when stopping going up', () => {
-      const ticks = [
+      const candleSticks = [
         {
           symbol: 'A',
-          open: '0',
-          close: '1'
+          tick: {
+            open: '0',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '1'
+          tick: {
+            open: '3',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '0'
+          tick: {
+            open: '1',
+            close: '0'
+          }
         },
         {
           symbol: 'A',
-          open: '0',
-          close: '1'
+          tick: {
+            open: '0',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '6'
+          tick: {
+            open: '3',
+            close: '6'
+          }
         },
         {
           symbol: 'A',
-          open: '6',
-          close: '3'
+          tick: {
+            open: '6',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '1'
+          tick: {
+            open: '3',
+            close: '1'
+          }
         },
         {
           symbol: 'A',
-          open: '1',
-          close: '3'
+          tick: {
+            open: '1',
+            close: '3'
+          }
         },
         {
           symbol: 'A',
-          open: '3',
-          close: '6'
+          tick: {
+            open: '3',
+            close: '6'
+          }
         },
         {
           symbol: 'A',
-          open: '6',
-          close: '10'
+          tick: {
+            open: '6',
+            close: '10'
+          }
         }
-      ] as TickExtended[];
+      ] as CandleStickWrapper[];
       const combinations = [
         {
           up: 0, down: 0, sma: 2
@@ -745,7 +833,7 @@ describe('statistics - moving-average-count', () => {
           up: 2, down: 1, sma: 2
         }
       ];
-      const result = ticks.reduce((statistics, tick) => aggregateMovingAverageCountStatistics(statistics, tick, combinations), {});
+      const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
         A: [
           {

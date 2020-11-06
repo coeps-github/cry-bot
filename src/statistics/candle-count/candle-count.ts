@@ -1,4 +1,3 @@
-import { TickExtended } from '../../binance/model';
 import {
   aggregateAvgWinPerCycle,
   aggregateCurrentWin,
@@ -15,9 +14,10 @@ import {
   sell
 } from '../helpers';
 import { CountCombination, CountStatisticsMap } from '../model';
+import { CandleStickWrapper } from '../../binance/model';
 
-export function aggregateCandleCountStatistics(candleCountStatistics: CountStatisticsMap, tick: TickExtended, candleCountCombinations: CountCombination[]): CountStatisticsMap {
-  const statistics = candleCountStatistics[tick.symbol] || candleCountCombinations.map(cc => ({
+export function aggregateCandleCountStatistics(candleCountStatistics: CountStatisticsMap, candleStick: CandleStickWrapper, candleCountCombinations: CountCombination[]): CountStatisticsMap {
+  const statistics = candleCountStatistics[candleStick.symbol] || candleCountCombinations.map(cc => ({
     combination: cc,
     hits: 0,
     currentWin: 0,
@@ -29,8 +29,8 @@ export function aggregateCandleCountStatistics(candleCountStatistics: CountStati
     downCount: 0
   }));
   const updatedStatistics = statistics.map(statistic => {
-    const up = isUp(tick);
-    const win = getWin(tick);
+    const up = isUp(candleStick.tick);
+    const win = getWin(candleStick.tick);
     const pBuy = prevBuy(statistic);
     const pSell = prevSell(statistic);
     const s = sell(!up, statistic);
@@ -56,6 +56,6 @@ export function aggregateCandleCountStatistics(candleCountStatistics: CountStati
   });
   return {
     ...candleCountStatistics,
-    [tick.symbol]: updatedStatistics
+    [candleStick.symbol]: updatedStatistics
   };
 }
