@@ -7,8 +7,8 @@ export interface BinanceConfig {
 
 export interface Binance {
   readonly getChart: (symbol?: string, period?: Period) => Observable<ChartExtended>;
-  readonly getCandleStickHistory: (symbol?: string, period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper>
-  readonly getCandleSticks: (symbols?: string[], period?: Period, options?: CandleStickOptions) => Observable<CandleStickWrapper>;
+  readonly getCandleStickHistory: (symbol?: string, period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]>
+  readonly getCandleSticks: (symbols?: string[], period?: Period, options?: CandleSticksOptions) => Observable<CandleStickWrapper>;
   readonly getCandleSticksWithHistory: (symbols?: string[], period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper>;
 }
 
@@ -44,15 +44,20 @@ export interface Chart {
   readonly [key: string]: Tick;
 }
 
-export interface CandleStickHistoryOptions extends CandleStickOptions {
-  readonly limit?: number;
+export interface CandleStickHistoryOptions extends CandleStickHistoryLimitOption {
   readonly startTime?: number;
   readonly endTime?: number;
 }
 
-export interface CandleStickOptions {
+export interface CandleStickHistoryLimitOption {
+  readonly limit?: number;
+}
+
+export interface CandleSticksOptions {
   readonly finalOnly?: boolean;
 }
+
+export type CandleSticksWithHistoryOptions = CandleSticksOptions & CandleStickHistoryLimitOption;
 
 export interface CandleStickWrapper {
   readonly symbol: string;
@@ -82,15 +87,7 @@ export interface Tick {
   readonly volume: string;
 }
 
-export interface CandleStickHistoryAPI extends Tick {
-  readonly time: number;
-  readonly closeTime: number;
-  readonly trades: number;
-  readonly assetVolume: string;
-  readonly buyBaseVolume: string;
-  readonly buyAssetVolume: string;
-  readonly ignored: boolean;
-}
+export type CandleStickHistoryAPI = (number & string & boolean)[];
 
 export interface CandleStickWrapperAPI {
   readonly e: string;

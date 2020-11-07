@@ -6,8 +6,8 @@ const config = getConfig();
 const binance = getBinance(config.binance);
 const statistics = getStatistics(binance);
 
-statistics.analyzeCandleCount(['BTCUSDT'], '1m')
-  .subscribe(statistics => console.log(Object.keys(statistics).map(key => JSON.stringify(statistics[key])).join('\n')));
+// statistics.analyzeCandleCount(['BTCUSDT'], '1m')
+//   .subscribe(statistics => console.log(Object.keys(statistics).map(key => JSON.stringify(statistics[key])).join('\n')));
 
 statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m')
   .subscribe(statistics => console.log(Object.keys(statistics)

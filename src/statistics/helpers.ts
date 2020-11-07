@@ -94,3 +94,18 @@ export function targetOrAbove(increaseCount: boolean, target: number, prevCount:
 export function count(increaseCount: boolean, target: number, prevCount: number): number {
   return increaseCount ? prevCount + 1 : prevCount >= target ? prevCount : 0;
 }
+
+export function sortStatistic(a: Statistic, b: Statistic): 0 | 1 | -1 {
+  const winA = a.totalWin - a.currentWin;
+  const winB = b.totalWin - b.currentWin;
+  if (winA === winB) {
+    if (a.avgWin === b.avgWin) {
+      if (a.hits === b.hits) {
+        return a.maxWin === b.maxWin ? 0 : a.maxWin < b.maxWin ? -1 : 1;
+      }
+      return a.hits < b.hits ? -1 : 1;
+    }
+    return a.avgWin < b.avgWin ? -1 : 1;
+  }
+  return winA < winB ? -1 : 1;
+}

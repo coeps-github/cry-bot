@@ -1,35 +1,53 @@
-import { Binance, CandleStickHistoryOptions, Period } from '../binance/model';
-import { Statistics } from './model';
-import { scan } from 'rxjs/operators';
+import { Binance, CandleSticksWithHistoryOptions, Period } from '../binance/model';
+import { CountStatisticsMap, Statistics } from './model';
+import { map, scan } from 'rxjs/operators';
 import { defaultCandleCountCombinations } from './candle-count/constants';
 import { aggregateCandleCountStatistics } from './candle-count/candle-count';
 import { defaultMovingAverageCombinations } from './moving-average-count/constants';
 import { aggregateMovingAverageCountStatistics } from './moving-average-count/moving-average-count';
+import { MovingAverageCountStatisticsMap } from './moving-average-count/model';
+import { sortStatistic } from './helpers';
 
 export function getStatistics(binance: Binance): Statistics {
   return {
     analyzeCandleCount: (
       symbols = ['BTCUSDT'],
       period: Period = '1m',
-      options: CandleStickHistoryOptions = { finalOnly: true, limit: 999999999 },
+      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 50000 },
       candleCombinations = defaultCandleCountCombinations
     ) => {
       return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
         scan((candleStatistics, candleStick) => {
           return aggregateCandleCountStatistics(candleStatistics, candleStick, candleCombinations);
-        }, {})
+        }, {} as CountStatisticsMap),
+        map(statistics => {
+          return Object.keys(statistics).reduce((csm, key) => {
+            return {
+              ...csm,
+              [key]: statistics[key].sort(sortStatistic)
+            };
+          }, {} as CountStatisticsMap);
+        })
       );
     },
     analyzeMovingAverageCount: (
       symbols = ['BTCUSDT'],
       period: Period = '1m',
-      options: CandleStickHistoryOptions = { finalOnly: true, limit: 999999999 },
+      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 50000 },
       movingAverageCombinations = defaultMovingAverageCombinations
     ) => {
       return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
         scan((movingAverageStatistics, candleStick) => {
           return aggregateMovingAverageCountStatistics(movingAverageStatistics, candleStick, movingAverageCombinations);
-        }, {})
+        }, {} as MovingAverageCountStatisticsMap),
+        map(statistics => {
+          return Object.keys(statistics).reduce((macsm, key) => {
+            return {
+              ...macsm,
+              [key]: statistics[key].sort(sortStatistic)
+            };
+          }, {} as MovingAverageCountStatisticsMap);
+        })
       );
     }
   };

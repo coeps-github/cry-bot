@@ -4,14 +4,16 @@ import {
   BinanceConfig,
   CandleStickHistoryAPI,
   CandleStickHistoryOptions,
-  CandleStickOptions,
+  CandleSticksOptions,
+  CandleSticksWithHistoryOptions,
   CandleStickWrapper,
   CandleStickWrapperAPI,
   Chart,
+  ChartExtended,
   ChartWrapper,
   Period
 } from './model';
-import { concat, forkJoin, Observable } from 'rxjs';
+import { concat, forkJoin, Observable, of } from 'rxjs';
 import { concatMap, filter, map, share, take } from 'rxjs/operators';
 
 export function getBinance(config: BinanceConfig): Binance {
@@ -36,14 +38,14 @@ export function getBinance(config: BinanceConfig): Binance {
             ...chartWrapper,
             lastTickTime,
             lastTick
-          };
+          } as ChartExtended;
         })
       );
     },
     getCandleStickHistory: (
       symbol = 'BTCUSDT',
       period: Period = '1m',
-      options: CandleStickHistoryOptions = { finalOnly: true, limit: 10000 }
+      options: CandleStickHistoryOptions = { limit: 1000 }
     ) => {
       return new Observable<CandleStickHistoryAPI[]>((observer) => {
         binanceApi.candlesticks(
@@ -52,37 +54,44 @@ export function getBinance(config: BinanceConfig): Binance {
           (error: unknown, candleSticks: CandleStickHistoryAPI[]) => error ?
             observer.error(error) :
             observer.next(candleSticks),
-          options
+          {
+            limit: options.limit,
+            startTime: options.startTime,
+            endTime: options.endTime
+          }
         );
         return () => {
           // empty
         };
       }).pipe(
         share(),
-        concatMap(candleSticks => candleSticks.map(candleStick => ({
-          symbol,
-          interval: period,
-          tick: {
-            eventTime: candleStick.time,
-            isFinal: !candleStick.ignored,
-            trades: candleStick.trades,
-            quoteVolume: candleStick.assetVolume,
-            buyVolume: candleStick.buyBaseVolume,
-            quoteBuyVolume: candleStick.buyAssetVolume,
-            open: candleStick.open,
-            high: candleStick.high,
-            low: candleStick.low,
-            close: candleStick.close,
-            volume: candleStick.volume
-          }
-        }))),
-        filter((candleSticks: CandleStickWrapper) => (options?.finalOnly && candleSticks.tick.isFinal) || !options?.finalOnly)
+        map(candleSticks => candleSticks.map(candleStick => {
+          const [eventTime, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume] = candleStick;
+          return {
+            symbol,
+            interval: period,
+            tick: {
+              eventTime,
+              closeTime,
+              isFinal: true,
+              trades,
+              quoteVolume: assetVolume,
+              buyVolume: buyBaseVolume,
+              quoteBuyVolume: buyAssetVolume,
+              open: open,
+              high: high,
+              low: low,
+              close: close,
+              volume: volume
+            }
+          } as CandleStickWrapper;
+        }))
       );
     },
     getCandleSticks: (
       symbols = ['BTCUSDT'],
       period: Period = '1m',
-      options: CandleStickOptions = { finalOnly: true }
+      options: CandleSticksOptions = { finalOnly: true }
     ) => {
       return new Observable<CandleStickWrapperAPI>((observer) => {
         binanceApi.websockets.candlesticks(symbols, period, (candleSticks: CandleStickWrapperAPI) => observer.next(candleSticks));
@@ -111,7 +120,7 @@ export function getBinance(config: BinanceConfig): Binance {
               close,
               volume
             }
-          };
+          } as CandleStickWrapper;
         }),
         filter((candleSticks: CandleStickWrapper) => (options?.finalOnly && candleSticks.tick.isFinal) || !options?.finalOnly)
       );
@@ -122,9 +131,28 @@ export function getBinance(config: BinanceConfig): Binance {
     getCandleSticksWithHistory: (
       symbols = ['BTCUSDT'],
       period: Period = '1m',
-      options: CandleStickHistoryOptions = { finalOnly: true, limit: 10000 }
+      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 50000 }
     ) => {
-      const history = symbols.map(symbol => binance.getCandleStickHistory(symbol, period, options).pipe(take(1)));
+      const getCandleStickHistoryRecursive:
+        (symbol: string, futureHistory?: CandleStickWrapper[], opts?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]> =
+        (symbol: string, futureHistory: CandleStickWrapper[] = [], opts: CandleStickHistoryOptions = options) => {
+          return binance.getCandleStickHistory(symbol, period, opts).pipe(
+            take(1),
+            concatMap(prevHistory => {
+              const history = [...prevHistory, ...futureHistory];
+              const limit = options.limit || history.length;
+              if (prevHistory.length > 0 && history.length < limit) {
+                return getCandleStickHistoryRecursive(symbol, history, {
+                  ...opts,
+                  limit: (limit - history.length) || 1000,
+                  endTime: history[0].tick.eventTime
+                });
+              }
+              return of(history.slice(history.length - limit));
+            })
+          );
+        };
+      const history = symbols.map(symbol => getCandleStickHistoryRecursive(symbol));
       const joinedHistory = forkJoin(history).pipe(
         concatMap(history => ([] as CandleStickWrapper[])
           .concat(...history)
