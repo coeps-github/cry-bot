@@ -6,5 +6,6 @@
   "ignore": [
     "src/**/*.spec.ts"
   ],
+  "restartable": false,
   "exec": "tsc && node --inspect-brk dist/index.js --config config/crybot.json"
 }
