@@ -25,7 +25,7 @@ export function aggregateCandleCountStatistics(
   candleCountCombinations: CountCombination[],
   console?: Console
 ): CountStatisticsMap {
-  const statistics = candleCountStatistics[candleStick.symbol] || candleCountCombinations.map(cc => ({
+  const statistics = candleCountStatistics[candleStick.symbol]?.statistics || candleCountCombinations.map(cc => ({
     combination: cc,
     hits: 0,
     currentWin: 0,
@@ -36,6 +36,10 @@ export function aggregateCandleCountStatistics(
     upCount: 0,
     downCount: 0
   }));
+  const quoteStatistic = candleCountStatistics[candleStick.symbol]?.quoteStatistic || {
+    totalWin: 0,
+    totalTicks: 0
+  };
   const updatedStatistics = statistics.map(statistic => {
     const up = isUp(candleStick.tick);
     const win = getWin(candleStick.tick);
@@ -65,11 +69,19 @@ export function aggregateCandleCountStatistics(
       sell: pBuy && s
     };
   });
+  const updatedQuoteStatistic = {
+    totalWin: quoteStatistic.totalWin + getWin(candleStick.tick),
+    totalTicks: quoteStatistic.totalTicks + 1
+  };
   if (console) {
     console.writeGraph(createGraphLine(candleStick.tick, updatedStatistics));
   }
   return {
     ...candleCountStatistics,
-    [candleStick.symbol]: updatedStatistics
+    [candleStick.symbol]: {
+      ...candleCountStatistics[candleStick.symbol],
+      statistics: updatedStatistics,
+      quoteStatistic: updatedQuoteStatistic
+    }
   };
 }

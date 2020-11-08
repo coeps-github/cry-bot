@@ -34,11 +34,17 @@ testData.forEach(data => console.writeGraph(data));
 
 statistics.analyzeCandleCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 200000 })
   .pipe(debounceTime(1000))
-  .subscribe(statistics => console.write(Object.keys(statistics).map(key => JSON.stringify(statistics[key])).join('\n')));
+  .subscribe(result =>
+    console.write(Object.keys(result)
+      .map(key => JSON.stringify(result[key]))
+      .join('\n')));
 
-// statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 200000 })
-//   .pipe(debounceTime(1000))
-//   .subscribe(statistics => console.write(Object.keys(statistics)
-//     .map(key => JSON.stringify(statistics[key]
-//       .map(statistic => ({ ...statistic, sma: {} }))))
-//     .join('\n')));
+statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 200000 })
+  .pipe(debounceTime(1000))
+  .subscribe(result =>
+    console.write(Object.keys(result)
+      .map(key => JSON.stringify({
+        ...result[key],
+        statistics: result[key].statistics.map(statistic => ({ ...statistic, sma: {} }))
+      }))
+      .join('\n')));

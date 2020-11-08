@@ -50,71 +50,83 @@ describe('statistics - moving-average-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0, sma: 2
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0, sma: 2
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 4,
+              totalWin: 4,
+              maxWin: 4,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '6',
+                  '10'
+                ],
+                result: '8'
+              }
             },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 4,
-            totalWin: 4,
-            maxWin: 4,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '6',
-                '10'
-              ],
-              result: '8'
-            }
-          },
-          {
-            combination: {
-              up: 1, down: 1, sma: 2
+            {
+              combination: {
+                up: 1, down: 1, sma: 2
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 4,
+              totalWin: 4,
+              maxWin: 4,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '6',
+                  '10'
+                ],
+                result: '8'
+              }
             },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 4,
-            totalWin: 4,
-            maxWin: 4,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '6',
-                '10'
-              ],
-              result: '8'
+            {
+              combination: {
+                up: 2, down: 1, sma: 2
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: true,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '6',
+                  '10'
+                ],
+                result: '8'
+              }
             }
-          },
-          {
-            combination: {
-              up: 2, down: 1, sma: 2
-            },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '6',
-                '10'
-              ],
-              result: '8'
-            }
+          ],
+          quoteStatistic: {
+            totalWin: 10,
+            totalTicks: 4
           }
-        ]
+        }
       });
     });
 
@@ -162,71 +174,83 @@ describe('statistics - moving-average-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0, sma: 2
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0, sma: 2
+              },
+              hits: 0,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             },
-            hits: 0,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
-            }
-          },
-          {
-            combination: {
-              up: 1, down: 1, sma: 2
+            {
+              combination: {
+                up: 1, down: 1, sma: 2
+              },
+              hits: 0,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             },
-            hits: 0,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
+            {
+              combination: {
+                up: 2, down: 1, sma: 2
+              },
+              hits: 0,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             }
-          },
-          {
-            combination: {
-              up: 2, down: 1, sma: 2
-            },
-            hits: 0,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
-            }
+          ],
+          quoteStatistic: {
+            totalWin: -10,
+            totalTicks: 4
           }
-        ]
+        }
       });
     });
 
@@ -274,71 +298,83 @@ describe('statistics - moving-average-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0, sma: 2
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0, sma: 2
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 2,
+              totalWin: 2,
+              maxWin: 2,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '3'
+                ],
+                result: '2'
+              }
             },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 2,
-            totalWin: 2,
-            maxWin: 2,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '3'
-              ],
-              result: '2'
+            {
+              combination: {
+                up: 1, down: 1, sma: 2
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 2,
+              totalWin: 2,
+              maxWin: 2,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '3'
+                ],
+                result: '2'
+              }
+            },
+            {
+              combination: {
+                up: 2, down: 1, sma: 2
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: true,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '3'
+                ],
+                result: '2'
+              }
             }
-          },
-          {
-            combination: {
-              up: 1, down: 1, sma: 2
-            },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 2,
-            totalWin: 2,
-            maxWin: 2,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '3'
-              ],
-              result: '2'
-            }
-          },
-          {
-            combination: {
-              up: 2, down: 1, sma: 2
-            },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 0,
+          ],
+          quoteStatistic: {
             totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '3'
-              ],
-              result: '2'
-            }
+            totalTicks: 4
           }
-        ]
+        }
       });
     });
 
@@ -386,71 +422,83 @@ describe('statistics - moving-average-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0, sma: 2
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0, sma: 2
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -1,
+              maxWin: 0,
+              minWin: -1,
+              avgWin: -1,
+              buy: false,
+              sell: true,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -1,
-            maxWin: 0,
-            minWin: -1,
-            avgWin: -1,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
+            {
+              combination: {
+                up: 1, down: 1, sma: 2
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -1,
+              maxWin: 0,
+              minWin: -1,
+              avgWin: -1,
+              buy: false,
+              sell: true,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
+            },
+            {
+              combination: {
+                up: 2, down: 1, sma: 2
+              },
+              hits: 0,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             }
-          },
-          {
-            combination: {
-              up: 1, down: 1, sma: 2
-            },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -1,
-            maxWin: 0,
-            minWin: -1,
-            avgWin: -1,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
-            }
-          },
-          {
-            combination: {
-              up: 2, down: 1, sma: 2
-            },
-            hits: 0,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
+          ],
+          quoteStatistic: {
             totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
-            }
+            totalTicks: 4
           }
-        ]
+        }
       });
 
     });
@@ -513,71 +561,83 @@ describe('statistics - moving-average-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0, sma: 2
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0, sma: 2
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -5,
+              maxWin: 0,
+              minWin: -3,
+              avgWin: -5,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -5,
-            maxWin: 0,
-            minWin: -3,
-            avgWin: -5,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
-            }
-          },
-          {
-            combination: {
-              up: 1, down: 1, sma: 2
+            {
+              combination: {
+                up: 1, down: 1, sma: 2
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -5,
+              maxWin: 0,
+              minWin: -3,
+              avgWin: -5,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -5,
-            maxWin: 0,
-            minWin: -3,
-            avgWin: -5,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
+            {
+              combination: {
+                up: 2, down: 1, sma: 2
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -2,
+              maxWin: 0,
+              minWin: -2,
+              avgWin: -2,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             }
-          },
-          {
-            combination: {
-              up: 2, down: 1, sma: 2
-            },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -2,
-            maxWin: 0,
-            minWin: -2,
-            avgWin: -2,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
-            }
+          ],
+          quoteStatistic: {
+            totalWin: 0,
+            totalTicks: 6
           }
-        ]
+        }
       });
     });
 
@@ -667,71 +727,83 @@ describe('statistics - moving-average-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0, sma: 2
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0, sma: 2
+              },
+              hits: 2,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -1,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: -0.5,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             },
-            hits: 2,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -1,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: -0.5,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
-            }
-          },
-          {
-            combination: {
-              up: 1, down: 1, sma: 2
+            {
+              combination: {
+                up: 1, down: 1, sma: 2
+              },
+              hits: 2,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -1,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: -0.5,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             },
-            hits: 2,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -1,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: -0.5,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
+            {
+              combination: {
+                up: 2, down: 1, sma: 2
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: -2,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '1',
+                  '0'
+                ],
+                result: '0.5'
+              }
             }
-          },
-          {
-            combination: {
-              up: 2, down: 1, sma: 2
-            },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -2,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: -2,
-            sma: {
-              interval: 2,
-              prices: [
-                '1',
-                '0'
-              ],
-              result: '0.5'
-            }
+          ],
+          quoteStatistic: {
+            totalWin: 0,
+            totalTicks: 10
           }
-        ]
+        }
       });
     });
 
@@ -835,71 +907,83 @@ describe('statistics - moving-average-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateMovingAverageCountStatistics(statistics, candleStick, combinations), {});
       expect(convertSmaToObject(result)).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0, sma: 2
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0, sma: 2
+              },
+              hits: 2,
+              upCount: 3,
+              downCount: 0,
+              currentWin: 7,
+              totalWin: 6,
+              maxWin: 4,
+              minWin: -3,
+              avgWin: 3,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '6',
+                  '10'
+                ],
+                result: '8'
+              }
             },
-            hits: 2,
-            upCount: 3,
-            downCount: 0,
-            currentWin: 7,
-            totalWin: 6,
-            maxWin: 4,
-            minWin: -3,
-            avgWin: 3,
-            sma: {
-              interval: 2,
-              prices: [
-                '6',
-                '10'
-              ],
-              result: '8'
-            }
-          },
-          {
-            combination: {
-              up: 1, down: 1, sma: 2
+            {
+              combination: {
+                up: 1, down: 1, sma: 2
+              },
+              hits: 2,
+              upCount: 3,
+              downCount: 0,
+              currentWin: 7,
+              totalWin: 6,
+              maxWin: 4,
+              minWin: -3,
+              avgWin: 3,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '6',
+                  '10'
+                ],
+                result: '8'
+              }
             },
-            hits: 2,
-            upCount: 3,
-            downCount: 0,
-            currentWin: 7,
-            totalWin: 6,
-            maxWin: 4,
-            minWin: -3,
-            avgWin: 3,
-            sma: {
-              interval: 2,
-              prices: [
-                '6',
-                '10'
-              ],
-              result: '8'
+            {
+              combination: {
+                up: 2, down: 1, sma: 2
+              },
+              hits: 1,
+              upCount: 3,
+              downCount: 0,
+              currentWin: 4,
+              totalWin: 2,
+              maxWin: 4,
+              minWin: -3,
+              avgWin: 2,
+              buy: false,
+              sell: false,
+              sma: {
+                interval: 2,
+                prices: [
+                  '6',
+                  '10'
+                ],
+                result: '8'
+              }
             }
-          },
-          {
-            combination: {
-              up: 2, down: 1, sma: 2
-            },
-            hits: 1,
-            upCount: 3,
-            downCount: 0,
-            currentWin: 4,
-            totalWin: 2,
-            maxWin: 4,
-            minWin: -3,
-            avgWin: 2,
-            sma: {
-              interval: 2,
-              prices: [
-                '6',
-                '10'
-              ],
-              result: '8'
-            }
+          ],
+          quoteStatistic: {
+            totalWin: 10,
+            totalTicks: 12
           }
-        ]
+        }
       });
     });
 

@@ -26,7 +26,7 @@ export function aggregateMovingAverageCountStatistics(
   movingAverageCountCombinations: MovingAverageCountCombination[],
   console?: Console
 ): MovingAverageCountStatisticsMap {
-  const statistics = movingAverageCountStatistics[candleStick.symbol] || movingAverageCountCombinations.map(mac => ({
+  const statistics = movingAverageCountStatistics[candleStick.symbol]?.statistics || movingAverageCountCombinations.map(mac => ({
     combination: mac,
     hits: 0,
     currentWin: 0,
@@ -38,6 +38,10 @@ export function aggregateMovingAverageCountStatistics(
     downCount: 0,
     sma: new SMA(mac.sma)
   }));
+  const quoteStatistic = movingAverageCountStatistics[candleStick.symbol]?.quoteStatistic || {
+    totalWin: 0,
+    totalTicks: 0
+  };
   const updatedStatistics = statistics.map(statistic => {
     const up = updateSmaAndReturnIsUp(candleStick.tick, statistic);
     const win = getWin(candleStick.tick);
@@ -69,11 +73,19 @@ export function aggregateMovingAverageCountStatistics(
       sell: pBuy && s
     };
   });
+  const updatedQuoteStatistic = {
+    totalWin: quoteStatistic.totalWin + getWin(candleStick.tick),
+    totalTicks: quoteStatistic.totalTicks + 1
+  };
   if (console) {
     console.writeGraph(createGraphLine(candleStick.tick, updatedStatistics));
   }
   return {
     ...movingAverageCountStatistics,
-    [candleStick.symbol]: updatedStatistics
+    [candleStick.symbol]: {
+      ...movingAverageCountStatistics[candleStick.symbol],
+      statistics: updatedStatistics,
+      quoteStatistic: updatedQuoteStatistic
+    }
   };
 }

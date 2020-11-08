@@ -8,7 +8,10 @@ export interface Statistics {
 }
 
 export interface StatisticsMap {
-  readonly [key: string]: Statistic[];
+  readonly [key: string]: {
+    readonly statistics: Statistic[];
+    readonly quoteStatistic: QuoteStatistic;
+  };
 }
 
 export interface Statistic {
@@ -19,6 +22,13 @@ export interface Statistic {
   readonly minWin: number;
   readonly avgWin: number;
   readonly maxWin: number;
+  readonly buy: boolean;
+  readonly sell: boolean;
+}
+
+export interface QuoteStatistic {
+  readonly totalWin: number;
+  readonly totalTicks: number;
 }
 
 export interface GraphStatistic extends Statistic {
@@ -27,7 +37,10 @@ export interface GraphStatistic extends Statistic {
 }
 
 export interface CountStatisticsMap extends StatisticsMap {
-  readonly [key: string]: CountStatistic[];
+  readonly [key: string]: {
+    readonly statistics: CountStatistic[];
+    readonly quoteStatistic: QuoteStatistic;
+  };
 }
 
 export interface CountStatistic extends Statistic {

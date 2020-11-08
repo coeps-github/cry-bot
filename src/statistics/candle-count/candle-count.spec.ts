@@ -42,47 +42,59 @@ describe('statistics - candle-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateCandleCountStatistics(statistics, candleStick, combinations), {});
       expect(result).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              hits: 0,
+              upCount: 3,
+              downCount: 0,
+              currentWin: 5,
+              totalWin: 5,
+              maxWin: 3,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false
             },
-            hits: 0,
-            upCount: 3,
-            downCount: 0,
-            currentWin: 5,
-            totalWin: 5,
-            maxWin: 3,
-            minWin: 0,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 1, down: 1
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              hits: 0,
+              upCount: 3,
+              downCount: 0,
+              currentWin: 5,
+              totalWin: 5,
+              maxWin: 3,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false
             },
-            hits: 0,
-            upCount: 3,
-            downCount: 0,
-            currentWin: 5,
-            totalWin: 5,
-            maxWin: 3,
-            minWin: 0,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 2, down: 1
-            },
-            hits: 0,
-            upCount: 3,
-            downCount: 0,
-            currentWin: 3,
-            totalWin: 3,
-            maxWin: 3,
-            minWin: 0,
-            avgWin: 0
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              hits: 0,
+              upCount: 3,
+              downCount: 0,
+              currentWin: 3,
+              totalWin: 3,
+              maxWin: 3,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false
+            }
+          ],
+          quoteStatistic: {
+            totalWin: 6,
+            totalTicks: 3
           }
-        ]
+        }
       });
     });
 
@@ -123,47 +135,59 @@ describe('statistics - candle-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateCandleCountStatistics(statistics, candleStick, combinations), {});
       expect(result).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              hits: 0,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false
             },
-            hits: 0,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 1, down: 1
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              hits: 0,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false
             },
-            hits: 0,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 2, down: 1
-            },
-            hits: 0,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              hits: 0,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false
+            }
+          ],
+          quoteStatistic: {
+            totalWin: -6,
+            totalTicks: 3
           }
-        ]
+        }
       });
     });
 
@@ -204,47 +228,59 @@ describe('statistics - candle-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateCandleCountStatistics(statistics, candleStick, combinations), {});
       expect(result).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 2,
+              totalWin: 2,
+              maxWin: 2,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false
             },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 2,
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 2,
+              totalWin: 2,
+              maxWin: 2,
+              minWin: 0,
+              avgWin: 0,
+              buy: false,
+              sell: false
+            },
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              hits: 0,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 0,
+              minWin: 0,
+              avgWin: 0,
+              buy: true,
+              sell: false
+            }
+          ],
+          quoteStatistic: {
             totalWin: 2,
-            maxWin: 2,
-            minWin: 0,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 1, down: 1
-            },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 2,
-            totalWin: 2,
-            maxWin: 2,
-            minWin: 0,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 2, down: 1
-            },
-            hits: 0,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 0,
-            minWin: 0,
-            avgWin: 0
+            totalTicks: 3
           }
-        ]
+        }
       });
     });
 
@@ -285,47 +321,59 @@ describe('statistics - candle-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateCandleCountStatistics(statistics, candleStick, combinations), {});
       expect(result).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 2,
+              minWin: -2,
+              avgWin: 0,
+              buy: false,
+              sell: true
             },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 2,
-            minWin: -2,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 1, down: 1
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 2,
+              minWin: -2,
+              avgWin: 0,
+              buy: false,
+              sell: true
             },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 2,
-            minWin: -2,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 2, down: 1
-            },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -2,
-            maxWin: 0,
-            minWin: -2,
-            avgWin: -2
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -2,
+              maxWin: 0,
+              minWin: -2,
+              avgWin: -2,
+              buy: false,
+              sell: true
+            }
+          ],
+          quoteStatistic: {
+            totalWin: 1,
+            totalTicks: 3
           }
-        ]
+        }
       });
 
     });
@@ -374,47 +422,59 @@ describe('statistics - candle-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateCandleCountStatistics(statistics, candleStick, combinations), {});
       expect(result).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 2,
+              minWin: -2,
+              avgWin: 0,
+              buy: false,
+              sell: false
             },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 0,
+              maxWin: 2,
+              minWin: -2,
+              avgWin: 0,
+              buy: false,
+              sell: false
+            },
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              hits: 1,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -2,
+              maxWin: 0,
+              minWin: -2,
+              avgWin: -2,
+              buy: false,
+              sell: false
+            }
+          ],
+          quoteStatistic: {
             totalWin: 0,
-            maxWin: 2,
-            minWin: -2,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 1, down: 1
-            },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 0,
-            maxWin: 2,
-            minWin: -2,
-            avgWin: 0
-          },
-          {
-            combination: {
-              up: 2, down: 1
-            },
-            hits: 1,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -2,
-            maxWin: 0,
-            minWin: -2,
-            avgWin: -2
+            totalTicks: 4
           }
-        ]
+        }
       });
     });
 
@@ -497,47 +557,59 @@ describe('statistics - candle-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateCandleCountStatistics(statistics, candleStick, combinations), {});
       expect(result).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              hits: 2,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: 1,
+              buy: false,
+              sell: false
             },
-            hits: 2,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 2,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: 1
-          },
-          {
-            combination: {
-              up: 1, down: 1
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              hits: 2,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: 2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: 1,
+              buy: false,
+              sell: false
             },
-            hits: 2,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: 2,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: 1
-          },
-          {
-            combination: {
-              up: 2, down: 1
-            },
-            hits: 2,
-            upCount: 0,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -2,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: -1
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              hits: 2,
+              upCount: 0,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: -1,
+              buy: false,
+              sell: false
+            }
+          ],
+          quoteStatistic: {
+            totalWin: 1,
+            totalTicks: 9
           }
-        ]
+        }
       });
     });
 
@@ -634,47 +706,59 @@ describe('statistics - candle-count', () => {
       ];
       const result = candleSticks.reduce((statistics, candleStick) => aggregateCandleCountStatistics(statistics, candleStick, combinations), {});
       expect(result).toEqual({
-        A: [
-          {
-            combination: {
-              up: 0, down: 0
+        A: {
+          statistics: [
+            {
+              combination: {
+                up: 0, down: 0
+              },
+              hits: 2,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 3,
+              totalWin: 5,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: 2.5,
+              buy: false,
+              sell: false
             },
-            hits: 2,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 3,
-            totalWin: 5,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: 2.5
-          },
-          {
-            combination: {
-              up: 1, down: 1
+            {
+              combination: {
+                up: 1, down: 1
+              },
+              hits: 2,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 3,
+              totalWin: 5,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: 2.5,
+              buy: false,
+              sell: false
             },
-            hits: 2,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 3,
-            totalWin: 5,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: 2.5
-          },
-          {
-            combination: {
-              up: 2, down: 1
-            },
-            hits: 2,
-            upCount: 2,
-            downCount: 0,
-            currentWin: 0,
-            totalWin: -2,
-            maxWin: 3,
-            minWin: -3,
-            avgWin: -1
+            {
+              combination: {
+                up: 2, down: 1
+              },
+              hits: 2,
+              upCount: 2,
+              downCount: 0,
+              currentWin: 0,
+              totalWin: -2,
+              maxWin: 3,
+              minWin: -3,
+              avgWin: -1,
+              buy: true,
+              sell: false
+            }
+          ],
+          quoteStatistic: {
+            totalWin: 6,
+            totalTicks: 11
           }
-        ]
+        }
       });
     });
 

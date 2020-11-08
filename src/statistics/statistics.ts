@@ -6,8 +6,8 @@ import { defaultCandleCountCombinations } from './candle-count/constants';
 import { aggregateCandleCountStatistics } from './candle-count/candle-count';
 import { defaultMovingAverageCombinations } from './moving-average-count/constants';
 import { aggregateMovingAverageCountStatistics } from './moving-average-count/moving-average-count';
-import { MovingAverageCountStatisticsMap } from './moving-average-count/model';
 import { sortStatistic } from './helpers';
+import { MovingAverageCountStatisticsMap } from './moving-average-count/model';
 
 export function getStatistics(binance: Binance, console: Console): Statistics {
   return {
@@ -25,7 +25,10 @@ export function getStatistics(binance: Binance, console: Console): Statistics {
           return Object.keys(statistics).reduce((csm, key) => {
             return {
               ...csm,
-              [key]: statistics[key].sort(sortStatistic)
+              [key]: {
+                ...statistics[key],
+                statistics: statistics[key].statistics.sort(sortStatistic)
+              }
             };
           }, {} as CountStatisticsMap);
         })
@@ -45,7 +48,10 @@ export function getStatistics(binance: Binance, console: Console): Statistics {
           return Object.keys(statistics).reduce((macsm, key) => {
             return {
               ...macsm,
-              [key]: statistics[key].sort(sortStatistic)
+              [key]: {
+                ...statistics[key],
+                statistics: statistics[key].statistics.sort(sortStatistic)
+              }
             };
           }, {} as MovingAverageCountStatisticsMap);
         })

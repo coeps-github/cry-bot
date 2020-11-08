@@ -13,14 +13,17 @@ export function convertSmaToObject(movingAverageStatistics: MovingAverageCountSt
   return Object.keys(movingAverageStatistics).reduce((mass, key) => {
     return {
       ...mass,
-      [key]: movingAverageStatistics[key].map(mas => ({
-        ...mas,
-        sma: {
-          ...mas.sma,
-          prices: (mas.sma as any).prices.map((price: any) => price.toString()),
-          result: mas.sma.isStable && mas.sma.getResult().valueOf()
-        }
-      }))
+      [key]: {
+        ...movingAverageStatistics[key],
+        statistics: movingAverageStatistics[key].statistics.map(mas => ({
+          ...mas,
+          sma: {
+            ...mas.sma,
+            prices: (mas.sma as any).prices.map((price: any) => price.toString()),
+            result: mas.sma.isStable && mas.sma.getResult().valueOf()
+          } as any
+        }))
+      }
     };
-  }, {});
+  }, {} as MovingAverageCountStatisticsMap);
 }
