@@ -1,5 +1,6 @@
 import { Tick } from '../binance/model';
-import { CountStatistic, Statistic } from './model';
+import { CountStatistic, GraphStatistic, Statistic } from './model';
+import { GraphLine } from '../console/model';
 
 export function isUp(tick: Tick): boolean {
   return +tick.close >= +tick.open;
@@ -101,11 +102,24 @@ export function sortStatistic(a: Statistic, b: Statistic): 0 | 1 | -1 {
   if (winA === winB) {
     if (a.avgWin === b.avgWin) {
       if (a.hits === b.hits) {
-        return a.maxWin === b.maxWin ? 0 : a.maxWin < b.maxWin ? -1 : 1;
+        return a.maxWin === b.maxWin ? 0 : a.maxWin < b.maxWin ? 1 : -1;
       }
-      return a.hits < b.hits ? -1 : 1;
+      return a.hits < b.hits ? 1 : -1;
     }
-    return a.avgWin < b.avgWin ? -1 : 1;
+    return a.avgWin < b.avgWin ? 1 : -1;
   }
-  return winA < winB ? -1 : 1;
+  return winA < winB ? 1 : -1;
+}
+
+export function createGraphLine(tick: Tick, statistics: GraphStatistic[]): GraphLine {
+  return {
+    open: +tick.open,
+    close: +tick.close,
+    text: statistics.map(s => {
+      const combination = Object.keys(s.combination).map(key => s.combination[key]).join('/');
+      return s.buy ? `B_${combination}` : s.sell ? `S_${combination}(${s.totalWin.toFixed(2)})` : '';
+    })
+      .filter(s => !!s)
+      .join(', ')
+  };
 }

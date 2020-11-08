@@ -21,6 +21,11 @@ export interface Statistic {
   readonly maxWin: number;
 }
 
+export interface GraphStatistic extends Statistic {
+  readonly buy: boolean;
+  readonly sell: boolean;
+}
+
 export interface CountStatisticsMap extends StatisticsMap {
   readonly [key: string]: CountStatistic[];
 }

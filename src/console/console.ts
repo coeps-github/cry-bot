@@ -107,49 +107,53 @@ export function getConsole(config?: ConsoleConfig): Console {
     if (screen === 'graph') {
       const open = line.open * graphValueFactor;
       const close = line.close * graphValueFactor;
+      const openRound = Math.round(open);
+      const closeRound = Math.round(close);
       const txt = line.text;
       const win = close - open >= 0;
       const graphMinIsEmpty = graphMin === 0;
       const closeLength = ('' + close).length + 1;
-      const closeWithLabel = win ? close + closeLength : close - closeLength;
-      const closeExceedingPadding = closeLength > graphPadding ? closeWithLabel : close;
-      const valueIsOutsidePadding = (win ? open : closeExceedingPadding) < (graphMin + graphPadding) ||
-        (win ? closeExceedingPadding : open) > (graphMin + graphWidth - graphPadding);
+      const closeWithLabel = win ? closeRound + closeLength : closeRound - closeLength;
+      const closeExceedingPadding = closeLength > graphPadding ? closeWithLabel : closeRound;
+      const valueIsOutsidePadding = (win ? openRound : closeExceedingPadding) < (graphMin + graphPadding) ||
+        (win ? closeExceedingPadding : openRound) > (graphMin + graphWidth - graphPadding);
       if (graphMinIsEmpty || valueIsOutsidePadding) {
         const prevGraphMin = graphMin;
-        graphMin = close - (graphWidth / 2);
+        graphMin = closeRound - (graphWidth / 2);
         write(createGraphLineCentered(`Shift left ${prevGraphMin} to ${graphMin}`, ':', ':'));
       }
-      const amount = win ? close - open : open - close;
+      const amount = win ? closeRound - openRound : openRound - closeRound;
       if (win) {
-        const content = amount === 0 ? `| ${close}` : amount === 1 ? `|| ${close}` : `|${fillString(amount - 1, '=')}| ${close}`;
-        write(createGraphLineLeft(open, `${content} ${txt}`, '-', ' '));
+        const content = amount === 0 ? `| ${close}` : amount === 1 ? `|> ${close}` : `|${fillString(amount - 1, '=')}> ${close}`;
+        write(createGraphLineLeft(openRound, `\x1b[32m${content}\x1b[0m ${txt}`));
       } else {
-        const content = amount === 0 ? `${close}-|` : amount === 1 ? `${close}-||` : `${close}-|${fillString(amount - 1, '=')}|`;
-        write(createGraphLineLeft(closeWithLabel, `${content} ${txt}`, '-', ' '));
+        const content = amount === 0 ? `${close} |` : amount === 1 ? `${close} <|` : `${close} <${fillString(amount - 1, '=')}|`;
+        write(createGraphLineLeft(closeWithLabel, `\x1b[31m${content}\x1b[0m ${txt}`));
       }
     }
   };
 
-  const createGraphLineCentered = (content: string, leftFill: string, rightFill: string) => {
+  const createGraphLineCentered = (content: string, leftFill = ' ', rightFill = ' ') => {
     const left = (graphWidth / 2) - (content.length / 2);
     return createGraphLine(left, content, leftFill, rightFill);
   };
 
-  const createGraphLineLeft = (value: number, content: string, leftFill: string, rightFill: string) => {
+  const createGraphLineLeft = (value: number, content: string, leftFill = ' ', rightFill = ' ') => {
     const left = value - graphMin;
     return createGraphLine(left, content, leftFill, rightFill);
   };
 
-  const createGraphLine = (left: number, content: string, leftFill: string, rightFill: string) => {
+  const createGraphLine = (left: number, content: string, leftFill = ' ', rightFill = ' ') => {
     const leftMin = left < 0 ? 0 : left;
     const right = graphWidth - leftMin - content.length;
-    const rightFillMin = right < 0 ? 0 : right;
-    return fillString(leftMin, leftFill) + content + fillString(rightFillMin, rightFill);
+    const rightMin = right < 0 ? 0 : right;
+    return fillString(leftMin, leftFill) + content + fillString(rightMin, rightFill);
   };
 
-  const fillString = (amount: number, fill: string) => {
-    return fill.repeat(Math.round(amount));
+  const fillString = (amount: number, fill = ' ') => {
+    const amountMin = amount < 0 ? 0 : amount;
+    const amountRound = Math.round(amountMin);
+    return fill.repeat(amountRound);
   };
 
   const write = (line = '', refillInput = true) => {
@@ -173,6 +177,7 @@ export function getConsole(config?: ConsoleConfig): Console {
 
   return {
     execute,
+    write,
     writeGraph
   };
 }

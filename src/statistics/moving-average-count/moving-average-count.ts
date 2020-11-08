@@ -6,6 +6,8 @@ import {
   aggregateMaxWinPerCycle,
   aggregateMinWinPerCycle,
   aggregateTotalWin,
+  buy,
+  createGraphLine,
   getNextDownCount,
   getNextUpCount,
   getWin,
@@ -16,8 +18,14 @@ import {
 import { SMA } from 'trading-signals';
 import { updateSmaAndReturnIsUp } from './helpers';
 import { CandleStickWrapper } from '../../binance/model';
+import { Console } from '../../console/model';
 
-export function aggregateMovingAverageCountStatistics(movingAverageCountStatistics: MovingAverageCountStatisticsMap, candleStick: CandleStickWrapper, movingAverageCountCombinations: MovingAverageCountCombination[]): MovingAverageCountStatisticsMap {
+export function aggregateMovingAverageCountStatistics(
+  movingAverageCountStatistics: MovingAverageCountStatisticsMap,
+  candleStick: CandleStickWrapper,
+  movingAverageCountCombinations: MovingAverageCountCombination[],
+  console?: Console
+): MovingAverageCountStatisticsMap {
   const statistics = movingAverageCountStatistics[candleStick.symbol] || movingAverageCountCombinations.map(mac => ({
     combination: mac,
     hits: 0,
@@ -35,6 +43,7 @@ export function aggregateMovingAverageCountStatistics(movingAverageCountStatisti
     const win = getWin(candleStick.tick);
     const pBuy = prevBuy(statistic);
     const pSell = prevSell(statistic);
+    const b = buy(up, statistic);
     const s = sell(!up, statistic);
     const hits = aggregateHits(pBuy, s, statistic);
     const currentWin = aggregateCurrentWin(pBuy, pSell, s, win, statistic);
@@ -55,9 +64,14 @@ export function aggregateMovingAverageCountStatistics(movingAverageCountStatisti
       maxWin,
       upCount,
       downCount,
-      sma
+      sma,
+      buy: !pBuy && b,
+      sell: pBuy && s
     };
   });
+  if (console) {
+    console.writeGraph(createGraphLine(candleStick.tick, updatedStatistics));
+  }
   return {
     ...movingAverageCountStatistics,
     [candleStick.symbol]: updatedStatistics

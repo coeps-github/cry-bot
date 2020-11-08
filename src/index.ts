@@ -1,17 +1,18 @@
-// import { getBinance } from './binance/binance';
+import { getBinance } from './binance/binance';
 import { getConfig } from './config/config';
-// import { getStatistics } from './statistics/statistics';
+import { getStatistics } from './statistics/statistics';
 import { getConsole } from './console/console';
+import { debounceTime } from 'rxjs/operators';
 
 const config = getConfig();
-// const binance = getBinance(config.binance);
-// const statistics = getStatistics(binance);
+const console = getConsole(config.console);
+const binance = getBinance(config.binance);
+const statistics = getStatistics(binance, console);
 
-const cons = getConsole(config.console);
 const testData = [
-  { open: 13999, close: 14000, text: 'buy bla bla' },
-  { open: 14000, close: 14001, text: '' },
-  { open: 14001, close: 14003, text: '' },
+  { open: 13999, close: 14000.27, text: 'buy bla bla' },
+  { open: 14000.27, close: 14001.87, text: '' },
+  { open: 14001.87, close: 14003, text: '' },
   { open: 14003, close: 14007, text: '' },
   { open: 14007, close: 14002, text: '' },
   { open: 14002, close: 13990, text: 'sell bla bla' },
@@ -28,15 +29,16 @@ const testData = [
   { open: 14004, close: 13990, text: 'very very very long text here' }
 ];
 
-cons.execute('showGraph');
-testData.forEach(data => cons.writeGraph(data));
+console.execute('showGraph');
+testData.forEach(data => console.writeGraph(data));
 
+statistics.analyzeCandleCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 1000 })
+  .pipe(debounceTime(1000))
+  .subscribe(statistics => console.write(Object.keys(statistics).map(key => JSON.stringify(statistics[key])).join('\n')));
 
-// statistics.analyzeCandleCount(['BTCUSDT'], '1m')
-//   .subscribe(statistics => console.log(Object.keys(statistics).map(key => JSON.stringify(statistics[key])).join('\n')));
-
-// statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 200000 })
-//   .subscribe(statistics => console.log(Object.keys(statistics)
+// statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 1000 })
+//   .pipe(debounceTime(1000))
+//   .subscribe(statistics => console.write(Object.keys(statistics)
 //     .map(key => JSON.stringify(statistics[key]
 //       .map(statistic => ({ ...statistic, sma: {} }))))
 //     .join('\n')));

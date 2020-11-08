@@ -9,8 +9,9 @@ export interface GraphConfig {
 }
 
 export interface Console {
-  readonly execute: (command: string) => void
-  readonly writeGraph: (line: GraphLine) => void
+  readonly execute: (command: string) => void;
+  readonly write: (line: string, refillInput?: boolean) => void;
+  readonly writeGraph: (line: GraphLine) => void;
 }
 
 export interface GraphLine {

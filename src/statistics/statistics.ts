@@ -1,4 +1,5 @@
 import { Binance, CandleSticksWithHistoryOptions, Period } from '../binance/model';
+import { Console } from '../console/model';
 import { CountStatisticsMap, Statistics } from './model';
 import { map, scan } from 'rxjs/operators';
 import { defaultCandleCountCombinations } from './candle-count/constants';
@@ -8,7 +9,7 @@ import { aggregateMovingAverageCountStatistics } from './moving-average-count/mo
 import { MovingAverageCountStatisticsMap } from './moving-average-count/model';
 import { sortStatistic } from './helpers';
 
-export function getStatistics(binance: Binance): Statistics {
+export function getStatistics(binance: Binance, console: Console): Statistics {
   return {
     analyzeCandleCount: (
       symbols = ['BTCUSDT'],
@@ -18,7 +19,7 @@ export function getStatistics(binance: Binance): Statistics {
     ) => {
       return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
         scan((candleStatistics, candleStick) => {
-          return aggregateCandleCountStatistics(candleStatistics, candleStick, candleCombinations);
+          return aggregateCandleCountStatistics(candleStatistics, candleStick, candleCombinations, console);
         }, {} as CountStatisticsMap),
         map(statistics => {
           return Object.keys(statistics).reduce((csm, key) => {
@@ -38,7 +39,7 @@ export function getStatistics(binance: Binance): Statistics {
     ) => {
       return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
         scan((movingAverageStatistics, candleStick) => {
-          return aggregateMovingAverageCountStatistics(movingAverageStatistics, candleStick, movingAverageCombinations);
+          return aggregateMovingAverageCountStatistics(movingAverageStatistics, candleStick, movingAverageCombinations, console);
         }, {} as MovingAverageCountStatisticsMap),
         map(statistics => {
           return Object.keys(statistics).reduce((macsm, key) => {

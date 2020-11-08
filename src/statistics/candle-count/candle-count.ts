@@ -5,6 +5,8 @@ import {
   aggregateMaxWinPerCycle,
   aggregateMinWinPerCycle,
   aggregateTotalWin,
+  buy,
+  createGraphLine,
   getNextDownCount,
   getNextUpCount,
   getWin,
@@ -15,8 +17,14 @@ import {
 } from '../helpers';
 import { CountCombination, CountStatisticsMap } from '../model';
 import { CandleStickWrapper } from '../../binance/model';
+import { Console } from '../../console/model';
 
-export function aggregateCandleCountStatistics(candleCountStatistics: CountStatisticsMap, candleStick: CandleStickWrapper, candleCountCombinations: CountCombination[]): CountStatisticsMap {
+export function aggregateCandleCountStatistics(
+  candleCountStatistics: CountStatisticsMap,
+  candleStick: CandleStickWrapper,
+  candleCountCombinations: CountCombination[],
+  console?: Console
+): CountStatisticsMap {
   const statistics = candleCountStatistics[candleStick.symbol] || candleCountCombinations.map(cc => ({
     combination: cc,
     hits: 0,
@@ -33,6 +41,7 @@ export function aggregateCandleCountStatistics(candleCountStatistics: CountStati
     const win = getWin(candleStick.tick);
     const pBuy = prevBuy(statistic);
     const pSell = prevSell(statistic);
+    const b = buy(up, statistic);
     const s = sell(!up, statistic);
     const hits = aggregateHits(pBuy, s, statistic);
     const currentWin = aggregateCurrentWin(pBuy, pSell, s, win, statistic);
@@ -51,9 +60,14 @@ export function aggregateCandleCountStatistics(candleCountStatistics: CountStati
       avgWin,
       maxWin,
       upCount,
-      downCount
+      downCount,
+      buy: !pBuy && b,
+      sell: pBuy && s
     };
   });
+  if (console) {
+    console.writeGraph(createGraphLine(candleStick.tick, updatedStatistics));
+  }
   return {
     ...candleCountStatistics,
     [candleStick.symbol]: updatedStatistics
