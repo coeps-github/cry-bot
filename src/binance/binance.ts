@@ -156,7 +156,7 @@ export function getBinance(config: BinanceConfig): Binance {
       period: Period = '1m',
       options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 50000 }
     ) => {
-      const history = symbols.map(symbol => getCandleStickHistoryRecursive(symbol));
+      const history = symbols.map(symbol => getCandleStickHistoryRecursive(symbol, period, undefined, options));
       const joinedHistory = forkJoin(history).pipe(
         concatMap(history => ([] as CandleStickWrapper[])
           .concat(...history)
