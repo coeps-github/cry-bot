@@ -33,6 +33,9 @@ export function getConsole(config?: ConsoleConfig): Console {
     if (key.sequence === '\b' || key.name === 'backspace') {
       currentInput = currentInput.substr(0, currentInput.length - 2);
     }
+    if (key.ctrl && key.name === 'c') {
+      quitApplication();
+    }
   });
 
   rl.on('line', (line: string) => {
