@@ -34,8 +34,6 @@
     "update-dependencies": "npm-check-updates --upgrade && npm install"
   },
   "dependencies": {
-    "asciichart": "1.5.25",
-    "enquirer": "2.3.6",
     "minimist": "1.2.5",
     "node-binance-api": "0.12.2",
     "rxjs": "6.6.3",
