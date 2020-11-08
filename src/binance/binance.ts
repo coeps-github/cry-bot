@@ -17,6 +17,7 @@ import {
 } from './model';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { concatMap, filter, map, share, take } from 'rxjs/operators';
+import { sortCandleSticks } from './helpers';
 
 export function getBinance(config: BinanceConfig): Binance {
   const binanceApi = BinanceApi().options(config);
@@ -132,7 +133,7 @@ export function getBinance(config: BinanceConfig): Binance {
     symbol: string,
     period: Period = '1m',
     futureHistory: CandleStickWrapper[] = [],
-    options: CandleStickHistoryPastOptions = { limit: 50000 }
+    options: CandleStickHistoryPastOptions = { limit: 100000 }
   ) => {
     return binance.getCandleStickHistory(symbol, period, {
       limit: options.limit,
@@ -156,7 +157,7 @@ export function getBinance(config: BinanceConfig): Binance {
     symbol: string,
     period: Period = '1m',
     pastHistory: CandleStickWrapper[] = [],
-    options: CandleStickHistoryFutureOptions = { limit: 50000 }
+    options: CandleStickHistoryFutureOptions = { limit: 100000 }
   ) => {
     return binance.getCandleStickHistory(symbol, period, {
       limit: options.limit,
@@ -169,7 +170,7 @@ export function getBinance(config: BinanceConfig): Binance {
         if (futureHistory.length > 0 && history.length < limit) {
           return getCandleStickHistoryFutureRecursive(symbol, period, history, {
             limit: (limit - history.length) || 1000,
-            startTime: history[history.length - 1].tick.eventTime
+            startTime: history[history.length - 1].tick.closeTime
           });
         }
         return of(history.slice(history.length - limit));
@@ -183,13 +184,17 @@ export function getBinance(config: BinanceConfig): Binance {
     getCandleSticksWithHistory: (
       symbols = ['BTCUSDT'],
       period: Period = '1m',
-      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 50000 }
+      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 }
     ) => {
-      const history = symbols.map(symbol => getCandleStickHistoryPastRecursive(symbol, period, undefined, options));
+      const history = symbols.map(symbol => getCandleStickHistoryPastRecursive(symbol, period, undefined, options)
+        .pipe(concatMap(pastHistory => getCandleStickHistoryFutureRecursive(symbol, period, pastHistory, {
+          ...options,
+          startTime: pastHistory[pastHistory.length - 1].tick.closeTime
+        }))));
       const joinedHistory = forkJoin(history).pipe(
         concatMap(history => ([] as CandleStickWrapper[])
           .concat(...history)
-          .sort((a, b) => a.tick.eventTime === b.tick.eventTime ? 0 : a.tick.eventTime < b.tick.eventTime ? -1 : 1))
+          .sort(sortCandleSticks))
       );
       const candles = binance.getCandleSticks(symbols, period, options);
       return concat(joinedHistory, candles);

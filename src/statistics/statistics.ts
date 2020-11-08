@@ -14,7 +14,7 @@ export function getStatistics(binance: Binance, console: Console): Statistics {
     analyzeCandleCount: (
       symbols = ['BTCUSDT'],
       period: Period = '1m',
-      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 50000 },
+      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 },
       candleCombinations = defaultCandleCountCombinations
     ) => {
       return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
@@ -34,7 +34,7 @@ export function getStatistics(binance: Binance, console: Console): Statistics {
     analyzeMovingAverageCount: (
       symbols = ['BTCUSDT'],
       period: Period = '1m',
-      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 50000 },
+      options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 },
       movingAverageCombinations = defaultMovingAverageCombinations
     ) => {
       return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
