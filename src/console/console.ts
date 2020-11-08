@@ -105,10 +105,12 @@ export function getConsole(config?: ConsoleConfig): Console {
 
   const writeGraph = (line: GraphLine) => {
     if (screen === 'graph') {
-      const open = line.open * graphValueFactor;
-      const close = line.close * graphValueFactor;
-      const openRound = Math.round(open);
-      const closeRound = Math.round(close);
+      const open = line.open;
+      const close = line.close;
+      const openFactor = line.open * graphValueFactor;
+      const closeFactor = line.close * graphValueFactor;
+      const openRound = Math.round(openFactor);
+      const closeRound = Math.round(closeFactor);
       const txt = line.text;
       const win = close - open >= 0;
       const graphMinIsEmpty = graphMin === 0;
@@ -120,7 +122,7 @@ export function getConsole(config?: ConsoleConfig): Console {
       if (graphMinIsEmpty || valueIsOutsidePadding) {
         const prevGraphMin = graphMin;
         graphMin = closeRound - (graphWidth / 2);
-        write(createGraphLineCentered(`Shift left ${prevGraphMin} to ${graphMin}`, ':', ':'));
+        write(createGraphLineCentered(`Shift left ${prevGraphMin / graphValueFactor} to ${graphMin / graphValueFactor}`, ':', ':'));
       }
       const amount = win ? closeRound - openRound : openRound - closeRound;
       if (win) {
