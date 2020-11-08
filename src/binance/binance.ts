@@ -141,15 +141,21 @@ export function getBinance(config: BinanceConfig): Binance {
     }).pipe(
       take(1),
       concatMap(pastHistory => {
-        const history = [...pastHistory, ...futureHistory];
-        const limit = options.limit || history.length;
-        if (pastHistory.length > 0 && history.length < limit) {
-          return getCandleStickHistoryPastRecursive(symbol, period, history, {
-            limit: (limit - history.length) || 1000,
-            endTime: history[0].tick.eventTime
-          });
+        const apiRepeatingItself = (pastHistory.length && pastHistory[0].tick.eventTime) === (futureHistory.length && futureHistory[0].tick.eventTime);
+        if (apiRepeatingItself) {
+          const limit = options.limit || futureHistory.length || 1000;
+          return of(futureHistory.slice(futureHistory.length - limit));
+        } else {
+          const history = [...pastHistory, ...futureHistory];
+          const limit = options.limit || history.length || 1000;
+          if (pastHistory.length > 0 && history.length < limit) {
+            return getCandleStickHistoryPastRecursive(symbol, period, history, {
+              limit,
+              endTime: history[0].tick.eventTime
+            });
+          }
+          return of(history.slice(history.length - limit));
         }
-        return of(history.slice(history.length - limit));
       })
     );
   };
@@ -165,15 +171,21 @@ export function getBinance(config: BinanceConfig): Binance {
     }).pipe(
       take(1),
       concatMap(futureHistory => {
-        const history = [...pastHistory, ...futureHistory];
-        const limit = options.limit || history.length;
-        if (futureHistory.length > 0 && history.length < limit) {
-          return getCandleStickHistoryFutureRecursive(symbol, period, history, {
-            limit: (limit - history.length) || 1000,
-            startTime: history[history.length - 1].tick.closeTime
-          });
+        const apiRepeatingItself = (pastHistory.length && pastHistory[0].tick.eventTime) === (futureHistory.length && futureHistory[0].tick.eventTime);
+        if (apiRepeatingItself) {
+          const limit = options.limit || pastHistory.length || 1000;
+          return of(pastHistory.slice(pastHistory.length - limit));
+        } else {
+          const history = [...pastHistory, ...futureHistory];
+          const limit = options.limit || history.length || 1000;
+          if (futureHistory.length > 0 && history.length < limit) {
+            return getCandleStickHistoryFutureRecursive(symbol, period, history, {
+              limit,
+              startTime: history[history.length - 1].tick.closeTime
+            });
+          }
+          return of(history.slice(history.length - limit));
         }
-        return of(history.slice(history.length - limit));
       })
     );
   };
