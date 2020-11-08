@@ -8,6 +8,7 @@ export interface BinanceConfig {
 export interface Binance {
   readonly getChart: (symbol?: string, period?: Period) => Observable<ChartExtended>;
   readonly getCandleStickHistory: (symbol?: string, period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]>
+  readonly getCandleStickHistoryRecursive: (symbol: string, period?: Period, futureHistory?: CandleStickWrapper[], options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]>
   readonly getCandleSticks: (symbols?: string[], period?: Period, options?: CandleSticksOptions) => Observable<CandleStickWrapper>;
   readonly getCandleSticksWithHistory: (symbols?: string[], period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper>;
 }

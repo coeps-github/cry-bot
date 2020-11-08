@@ -126,32 +126,36 @@ export function getBinance(config: BinanceConfig): Binance {
       );
     }
   };
+  const getCandleStickHistoryRecursive: Binance['getCandleStickHistoryRecursive'] = (
+    symbol: string,
+    period: Period = '1m',
+    futureHistory: CandleStickWrapper[] = [],
+    options: CandleStickHistoryOptions = { limit: 50000 }
+  ) => {
+    return binance.getCandleStickHistory(symbol, period, options).pipe(
+      take(1),
+      concatMap(prevHistory => {
+        const history = [...prevHistory, ...futureHistory];
+        const limit = options.limit || history.length;
+        if (prevHistory.length > 0 && history.length < limit) {
+          return getCandleStickHistoryRecursive(symbol, period, history, {
+            ...options,
+            limit: (limit - history.length) || 1000,
+            endTime: history[0].tick.eventTime
+          });
+        }
+        return of(history.slice(history.length - limit));
+      })
+    );
+  };
   return {
     ...binance,
+    getCandleStickHistoryRecursive,
     getCandleSticksWithHistory: (
       symbols = ['BTCUSDT'],
       period: Period = '1m',
       options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 50000 }
     ) => {
-      const getCandleStickHistoryRecursive:
-        (symbol: string, futureHistory?: CandleStickWrapper[], opts?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]> =
-        (symbol: string, futureHistory: CandleStickWrapper[] = [], opts: CandleStickHistoryOptions = options) => {
-          return binance.getCandleStickHistory(symbol, period, opts).pipe(
-            take(1),
-            concatMap(prevHistory => {
-              const history = [...prevHistory, ...futureHistory];
-              const limit = options.limit || history.length;
-              if (prevHistory.length > 0 && history.length < limit) {
-                return getCandleStickHistoryRecursive(symbol, history, {
-                  ...opts,
-                  limit: (limit - history.length) || 1000,
-                  endTime: history[0].tick.eventTime
-                });
-              }
-              return of(history.slice(history.length - limit));
-            })
-          );
-        };
       const history = symbols.map(symbol => getCandleStickHistoryRecursive(symbol));
       const joinedHistory = forkJoin(history).pipe(
         concatMap(history => ([] as CandleStickWrapper[])
