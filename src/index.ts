@@ -3,10 +3,12 @@ import { getConfig } from './config/config';
 import { getStatistics } from './statistics/statistics';
 import { getConsole } from './console/console';
 import { debounceTime } from 'rxjs/operators';
+import { getFile } from './file/file';
 
 const config = getConfig();
+const file = getFile(config.file);
+const binance = getBinance(config.binance, file);
 const console = getConsole(config.console);
-const binance = getBinance(config.binance);
 const statistics = getStatistics(binance, console);
 
 const testData = [
@@ -32,19 +34,19 @@ const testData = [
 console.execute('showGraph');
 testData.forEach(data => console.writeGraph(data));
 
-statistics.analyzeCandleCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 200000 })
+statistics.analyzeCandleCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 2500 })
   .pipe(debounceTime(1000))
   .subscribe(result =>
     console.write(Object.keys(result)
       .map(key => JSON.stringify(result[key]))
       .join('\n')));
 
-statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 200000 })
-  .pipe(debounceTime(1000))
-  .subscribe(result =>
-    console.write(Object.keys(result)
-      .map(key => JSON.stringify({
-        ...result[key],
-        statistics: result[key].statistics.map(statistic => ({ ...statistic, sma: {} }))
-      }))
-      .join('\n')));
+// statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 200000 })
+//   .pipe(debounceTime(1000))
+//   .subscribe(result =>
+//     console.write(Object.keys(result)
+//       .map(key => JSON.stringify({
+//         ...result[key],
+//         statistics: result[key].statistics.map(statistic => ({ ...statistic, sma: {} }))
+//       }))
+//       .join('\n')));

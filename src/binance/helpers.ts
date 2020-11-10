@@ -1,5 +1,9 @@
-import { CandleStickWrapper } from './model';
+import { CandleStickWrapper, Period } from './model';
 
 export function sortCandleSticks(a: CandleStickWrapper, b: CandleStickWrapper): 0 | 1 | -1 {
   return a.tick.eventTime === b.tick.eventTime ? 0 : a.tick.eventTime < b.tick.eventTime ? -1 : 1;
+}
+
+export function getFileName(symbol: string, period: Period) {
+  return `binance-${symbol}-${period}`;
 }

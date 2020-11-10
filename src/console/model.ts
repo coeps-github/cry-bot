@@ -1,5 +1,5 @@
 export interface ConsoleConfig {
-  readonly graph: GraphConfig;
+  readonly graph?: GraphConfig;
 }
 
 export interface GraphConfig {

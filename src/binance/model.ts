@@ -8,10 +8,13 @@ export interface BinanceConfig {
 export interface Binance {
   readonly getChart: (symbol?: string, period?: Period) => Observable<ChartExtended>;
   readonly getCandleStickHistory: (symbol?: string, period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]>
-  readonly getCandleStickHistoryPastRecursive: (symbol: string, period?: Period, futureHistory?: CandleStickWrapper[], options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]>
-  readonly getCandleStickHistoryFutureRecursive: (symbol: string, period?: Period, pastHistory?: CandleStickWrapper[], options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]>
+  readonly getCandleStickHistoryPastRecursive: (symbol: string, period?: Period, futureHistory?: CandleStickWrapper[], options?: CandleStickHistoryPastOptions) => Observable<CandleStickWrapper[]>
+  readonly getCandleStickHistoryFutureRecursive: (symbol: string, period?: Period, pastHistory?: CandleStickWrapper[], options?: CandleStickHistoryFutureOptions) => Observable<CandleStickWrapper[]>
+  readonly getCandleStickHistoryAllRecursive: (symbol: string, period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper[]>
+  readonly getCandleStickHistoryLocal: (symbol?: string, period?: Period, options?: CandleStickHistoryLimitOption) => Observable<CandleStickWrapper>;
   readonly getCandleSticks: (symbols?: string[], period?: Period, options?: CandleSticksOptions) => Observable<CandleStickWrapper>;
-  readonly getCandleSticksWithHistory: (symbols?: string[], period?: Period, options?: CandleStickHistoryOptions) => Observable<CandleStickWrapper>;
+  readonly getCandleSticksWithHistory: (symbols?: string[], period?: Period, options?: CandleSticksWithHistoryOptions) => Observable<CandleStickWrapper>;
+  readonly getCandleSticksWithHistoryLocal: (symbols?: string[], period?: Period, options?: CandleSticksWithHistoryOptions) => Observable<CandleStickWrapper>;
 }
 
 export type Period =

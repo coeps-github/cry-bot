@@ -17,7 +17,7 @@ export function getStatistics(binance: Binance, console: Console): Statistics {
       options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 },
       candleCombinations = defaultCandleCountCombinations
     ) => {
-      return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
+      return binance.getCandleSticksWithHistoryLocal(symbols, period, options).pipe(
         scan((candleStatistics, candleStick) => {
           return aggregateCandleCountStatistics(candleStatistics, candleStick, candleCombinations, console);
         }, {} as CountStatisticsMap),
@@ -40,7 +40,7 @@ export function getStatistics(binance: Binance, console: Console): Statistics {
       options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 },
       movingAverageCombinations = defaultMovingAverageCombinations
     ) => {
-      return binance.getCandleSticksWithHistory(symbols, period, options).pipe(
+      return binance.getCandleSticksWithHistoryLocal(symbols, period, options).pipe(
         scan((movingAverageStatistics, candleStick) => {
           return aggregateMovingAverageCountStatistics(movingAverageStatistics, candleStick, movingAverageCombinations, console);
         }, {} as MovingAverageCountStatisticsMap),
