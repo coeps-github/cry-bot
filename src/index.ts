@@ -34,14 +34,14 @@ const testData = [
 console.execute('showGraph');
 testData.forEach(data => console.writeGraph(data));
 
-statistics.analyzeCandleCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 2500 })
+statistics.analyzeCandleCount('BTCUSDT', '1m', { finalOnly: true, limit: 2500 })
   .pipe(debounceTime(1000))
   .subscribe(result =>
     console.write(Object.keys(result)
       .map(key => JSON.stringify(result[key]))
       .join('\n')));
 
-// statistics.analyzeMovingAverageCount(['BTCUSDT'], '1m', { finalOnly: true, limit: 200000 })
+// statistics.analyzeMovingAverageCount('BTCUSDT', '1m', { finalOnly: true, limit: 200000 })
 //   .pipe(debounceTime(1000))
 //   .subscribe(result =>
 //     console.write(Object.keys(result)

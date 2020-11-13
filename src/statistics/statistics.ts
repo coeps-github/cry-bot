@@ -12,12 +12,12 @@ import { MovingAverageCountStatisticsMap } from './moving-average-count/model';
 export function getStatistics(binance: Binance, console: Console): Statistics {
   return {
     analyzeCandleCount: (
-      symbols = ['BTCUSDT'],
+      symbol = 'BTCUSDT',
       period: Period = '1m',
       options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 },
       candleCombinations = defaultCandleCountCombinations
     ) => {
-      return binance.getCandleSticksWithHistoryLocal(symbols, period, options).pipe(
+      return binance.getCandleSticksWithHistoryLocal(symbol, period, options).pipe(
         scan((candleStatistics, candleStick) => {
           return aggregateCandleCountStatistics(candleStatistics, candleStick, candleCombinations, console);
         }, {} as CountStatisticsMap),
@@ -35,12 +35,12 @@ export function getStatistics(binance: Binance, console: Console): Statistics {
       );
     },
     analyzeMovingAverageCount: (
-      symbols = ['BTCUSDT'],
+      symbol = 'BTCUSDT',
       period: Period = '1m',
       options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 },
       movingAverageCombinations = defaultMovingAverageCombinations
     ) => {
-      return binance.getCandleSticksWithHistoryLocal(symbols, period, options).pipe(
+      return binance.getCandleSticksWithHistoryLocal(symbol, period, options).pipe(
         scan((movingAverageStatistics, candleStick) => {
           return aggregateMovingAverageCountStatistics(movingAverageStatistics, candleStick, movingAverageCombinations, console);
         }, {} as MovingAverageCountStatisticsMap),

@@ -3,10 +3,9 @@ import {
   Binance,
   BinanceConfig,
   CandleStickHistoryAPI,
-  CandleStickHistoryFutureOptions,
-  CandleStickHistoryLimitOption,
+  CandleStickHistoryLimitOptions,
   CandleStickHistoryOptions,
-  CandleStickHistoryPastOptions,
+  CandleStickHistoryRecursiveOptions,
   CandleSticksOptions,
   CandleSticksWithHistoryOptions,
   CandleStickWrapper,
@@ -16,14 +15,15 @@ import {
   ChartWrapper,
   Period
 } from './model';
-import { concat, forkJoin, Observable, of } from 'rxjs';
-import { concatMap, filter, map, share, take, tap, toArray } from 'rxjs/operators';
-import { getFileName, sortCandleSticks } from './helpers';
+import { concat, EMPTY, Observable } from 'rxjs';
+import { concatMap, filter, map, share, tap } from 'rxjs/operators';
+import { getFileName } from './helpers';
 import { File } from '../file/model';
 import { chain } from '../shared/chain';
 
 export function getBinance(config: BinanceConfig, file: File): Binance {
   const binanceApi = BinanceApi().options(config);
+  const apiHistoryLimit = 1000;
   const binance = {
     getChart: (symbol = 'BTCUSDT', period: Period = '1m') => {
       return new Observable<ChartWrapper>(observer => {
@@ -51,17 +51,24 @@ export function getBinance(config: BinanceConfig, file: File): Binance {
     getCandleStickHistory: (
       symbol = 'BTCUSDT',
       period: Period = '1m',
-      options: CandleStickHistoryOptions = { limit: 1000 }
+      options: CandleStickHistoryOptions = { limit: apiHistoryLimit }
     ) => {
+      const optionsLimit = options.limit || apiHistoryLimit;
+      const nextLimit = optionsLimit > apiHistoryLimit ? apiHistoryLimit : optionsLimit;
       return new Observable<CandleStickHistoryAPI[]>(observer => {
         binanceApi.candlesticks(
           symbol,
           period,
-          (error: unknown, candleSticks: CandleStickHistoryAPI[]) => error ?
-            observer.error(error) :
-            observer.next(candleSticks),
+          (error: unknown, candleSticks: CandleStickHistoryAPI[]) => {
+            if (error) {
+              observer.error(error);
+            } else {
+              observer.next(candleSticks);
+              observer.complete();
+            }
+          },
           {
-            limit: options.limit,
+            limit: nextLimit,
             startTime: options.startTime,
             endTime: options.endTime
           }
@@ -91,16 +98,17 @@ export function getBinance(config: BinanceConfig, file: File): Binance {
               volume: volume
             }
           } as CandleStickWrapper;
-        }))
+        })),
+        concatMap(candleSticks => candleSticks)
       );
     },
     getCandleSticks: (
-      symbols = ['BTCUSDT'],
+      symbol = 'BTCUSDT',
       period: Period = '1m',
       options: CandleSticksOptions = { finalOnly: true }
     ) => {
       return new Observable<CandleStickWrapperAPI>(observer => {
-        binanceApi.websockets.candlesticks(symbols, period, (candleSticks: CandleStickWrapperAPI) => observer.next(candleSticks));
+        binanceApi.websockets.candlesticks([symbol], period, (candleSticks: CandleStickWrapperAPI) => observer.next(candleSticks));
         return () => {
           // empty
         };
@@ -132,127 +140,68 @@ export function getBinance(config: BinanceConfig, file: File): Binance {
       );
     }
   };
-  const getCandleStickHistoryPastRecursive: Binance['getCandleStickHistoryPastRecursive'] = (
+  const getCandleStickHistoryRecursive: Binance['getCandleStickHistoryRecursive'] = (
     symbol: string,
     period: Period = '1m',
-    futureHistory: CandleStickWrapper[] = [],
-    options: CandleStickHistoryPastOptions = { limit: 100000 }
+    lastCandleStick = undefined,
+    options: CandleStickHistoryRecursiveOptions = { limit: 100000 }
   ) => {
-    return binance.getCandleStickHistory(symbol, period, {
-      limit: options.limit,
-      endTime: options.endTime
-    }).pipe(
-      take(1),
-      concatMap(pastHistory => {
-        const apiRepeatingItself = (pastHistory.length && pastHistory[0].tick.eventTime) === (futureHistory.length && futureHistory[0].tick.eventTime);
-        if (apiRepeatingItself) {
-          const limit = options.limit || futureHistory.length || 1000;
-          return of(futureHistory.slice(futureHistory.length - limit));
+    const optionsLimit = options.limit || apiHistoryLimit;
+    const nextLimit = optionsLimit > apiHistoryLimit ? optionsLimit - apiHistoryLimit : 0;
+    return chain(
+      binance.getCandleStickHistory(symbol, period, {
+        limit: optionsLimit,
+        startTime: options.startTime
+      }),
+      candleStick => {
+        if (
+          nextLimit > 0 &&
+          lastCandleStick?.tick?.eventTime !== candleStick?.tick?.eventTime
+        ) {
+          return getCandleStickHistoryRecursive(symbol, period, candleStick, {
+            limit: nextLimit,
+            startTime: candleStick?.tick?.closeTime || 0
+          });
         } else {
-          const history = [...pastHistory, ...futureHistory];
-          const limit = options.limit || history.length || 1000;
-          if (pastHistory.length > 0 && history.length < limit) {
-            return getCandleStickHistoryPastRecursive(symbol, period, history, {
-              limit,
-              endTime: history[0].tick.eventTime
-            });
-          }
-          return of(history.slice(history.length - limit));
+          return EMPTY;
         }
-      })
+      }
     );
-  };
-  const getCandleStickHistoryFutureRecursive: Binance['getCandleStickHistoryFutureRecursive'] = (
-    symbol: string,
-    period: Period = '1m',
-    pastHistory: CandleStickWrapper[] = [],
-    options: CandleStickHistoryFutureOptions = { limit: 100000 }
-  ) => {
-    return binance.getCandleStickHistory(symbol, period, {
-      limit: options.limit,
-      startTime: options.startTime
-    }).pipe(
-      take(1),
-      concatMap(futureHistory => {
-        const apiRepeatingItself = (pastHistory.length && pastHistory[0].tick.eventTime) === (futureHistory.length && futureHistory[0].tick.eventTime);
-        if (apiRepeatingItself) {
-          const limit = options.limit || pastHistory.length || 1000;
-          return of(pastHistory.slice(pastHistory.length - limit));
-        } else {
-          const history = [...pastHistory, ...futureHistory];
-          const limit = options.limit || history.length || 1000;
-          if (futureHistory.length > 0 && history.length < limit) {
-            return getCandleStickHistoryFutureRecursive(symbol, period, history, {
-              limit,
-              startTime: history[history.length - 1].tick.closeTime
-            });
-          }
-          return of(history.slice(history.length - limit));
-        }
-      })
-    );
-  };
-  const getCandleStickHistoryAllRecursive: Binance['getCandleStickHistoryAllRecursive'] = (
-    symbol: string,
-    period: Period = '1m',
-    options: CandleStickHistoryOptions = { limit: 100000 }
-  ) => {
-    return getCandleStickHistoryPastRecursive(symbol, period, undefined, options)
-      .pipe(
-        concatMap(pastHistory => getCandleStickHistoryFutureRecursive(symbol, period, pastHistory, {
-          ...options,
-          startTime: pastHistory[pastHistory.length - 1].tick.closeTime
-        })),
-        map(history => history.slice(history.length - (options.limit || history.length || 1000)))
-      );
   };
   const getCandleStickHistoryLocal: Binance['getCandleStickHistoryLocal'] = (
     symbol = 'BTCUSDT',
     period: Period = '1m',
-    options: CandleStickHistoryLimitOption = { limit: 100000 }
+    options: CandleStickHistoryLimitOptions = { limit: 100000 }
   ) => {
     const fileName = getFileName(symbol, period);
     const fileHistory = file.readLines<CandleStickWrapper>(fileName);
-    return chain(fileHistory, candleStick => getCandleStickHistoryFutureRecursive(symbol, period, undefined, {
-      ...options,
-      startTime: candleStick?.tick.closeTime || 0
+    return chain(fileHistory, candleStick => getCandleStickHistoryRecursive(symbol, period, undefined, {
+      limit: options.limit,
+      startTime: candleStick?.tick?.closeTime || 0
     }).pipe(
-      concatMap(futureHistory => futureHistory),
       tap(history => file.appendLine(fileName, history))
     ));
   };
   return {
     ...binance,
-    getCandleStickHistoryPastRecursive,
-    getCandleStickHistoryFutureRecursive,
-    getCandleStickHistoryAllRecursive,
     getCandleStickHistoryLocal,
     getCandleSticksWithHistory: (
-      symbols = ['BTCUSDT'],
+      symbol = 'BTCUSDT',
       period: Period = '1m',
       options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 }
     ) => {
-      const history = symbols.map(symbol => getCandleStickHistoryAllRecursive(symbol, period, options));
-      const joinedHistory = forkJoin(history).pipe(
-        concatMap(history => ([] as CandleStickWrapper[])
-          .concat(...history)
-          .sort(sortCandleSticks))
-      );
-      const candles = binance.getCandleSticks(symbols, period, options);
-      return concat(joinedHistory, candles);
+      const history = getCandleStickHistoryRecursive(symbol, period, undefined, { limit: options.limit });
+      const candles = binance.getCandleSticks(symbol, period, options);
+      return concat(history, candles);
     },
     getCandleSticksWithHistoryLocal: (
-      symbols = ['BTCUSDT'],
+      symbol = 'BTCUSDT',
       period: Period = '1m',
       options: CandleSticksWithHistoryOptions = { finalOnly: true, limit: 100000 }
     ) => {
-      const history = symbols.map(symbol => getCandleStickHistoryLocal(symbol, period, options));
-      const joinedHistory = concat(...history).pipe(
-        toArray(),
-        concatMap(history => history.sort(sortCandleSticks))
-      );
-      const candles = binance.getCandleSticks(symbols, period, options);
-      return concat(joinedHistory, candles);
+      const history = getCandleStickHistoryLocal(symbol, period, { limit: options.limit });
+      const candles = binance.getCandleSticks(symbol, period, options);
+      return concat(history, candles);
     }
   } as Binance;
 }
