@@ -160,7 +160,7 @@ export function getBinance(config: BinanceConfig, file: File): Binance {
       candleStick => {
         if (
           nextLimit > 0 &&
-          lastCandleStick?.tick?.eventTime !== candleStick?.tick?.eventTime
+          (lastCandleStick?.tick?.eventTime || 0) < (candleStick?.tick?.eventTime || 0)
         ) {
           return getCandleStickHistoryRecursive(symbol, period, candleStick, {
             limit: nextLimit,
