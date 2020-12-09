@@ -1,6 +1,6 @@
 import { Tick } from '../binance/model';
 import { CountStatistic, GraphStatistic, Statistic } from './model';
-import { GraphLine } from '../console/model';
+import { GraphLine } from '../graph/model';
 
 export function isUp(tick: Tick): boolean {
   return +tick.close >= +tick.open;
@@ -115,10 +115,11 @@ export function createGraphLine(tick: Tick, statistics: GraphStatistic[]): Graph
   return {
     open: +tick.open,
     close: +tick.close,
-    text: statistics.map(s => {
-      const combination = Object.keys(s.combination).map(key => s.combination[key]).join('/');
-      return s.buy ? `B_${combination}` : s.sell ? `S_${combination}(${s.totalWin.toFixed(2)})` : '';
-    })
+    text: statistics
+      .map(s => {
+        const combination = Object.keys(s.combination).map(key => s.combination[key]).join('/');
+        return s.buy ? `B_${combination}` : s.sell ? `S_${combination}(${s.totalWin.toFixed(2)})` : '';
+      })
       .filter(s => !!s)
       .join(', ')
   };

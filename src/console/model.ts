@@ -1,21 +1,25 @@
+import { GraphConfig } from '../graph/model';
+
 export interface ConsoleConfig {
   readonly graph?: GraphConfig;
 }
 
-export interface GraphConfig {
-  readonly width?: number;
-  readonly padding?: number;
-  readonly valueFactor?: number;
-}
-
 export interface Console {
-  readonly execute: (command: string) => void;
   readonly write: (line: string, refillInput?: boolean) => void;
-  readonly writeGraph: (line: GraphLine) => void;
+  readonly writeError: (line: string, refillInput?: boolean) => void;
+  readonly clear: () => void;
 }
 
-export interface GraphLine {
-  readonly open: number;
-  readonly close: number;
-  readonly text: string;
+export type ConsoleScreens =
+  'statistics/candle-count' |
+  'statistics/moving-average-count' |
+  'graph' |
+  'quit' |
+  'help';
+
+export interface ConsoleScreen {
+  readonly id: ConsoleScreens;
+  readonly show: (command: string) => boolean;
+  readonly write: (console: Console) => void;
+  readonly help: (console: Console) => void;
 }

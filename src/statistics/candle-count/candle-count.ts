@@ -6,7 +6,6 @@ import {
   aggregateMinWinPerCycle,
   aggregateTotalWin,
   buy,
-  createGraphLine,
   getNextDownCount,
   getNextUpCount,
   getWin,
@@ -74,7 +73,7 @@ export function aggregateCandleCountStatistics(
     totalTicks: quoteStatistic.totalTicks + 1
   };
   if (console) {
-    console.writeGraph(createGraphLine(candleStick.tick, updatedStatistics));
+    // console.writeGraph(createGraphLine(candleStick.tick, updatedStatistics));
   }
   return {
     ...candleCountStatistics,
