@@ -8,6 +8,7 @@ export interface Console {
   readonly write: (line: string, refillInput?: boolean) => void;
   readonly writeError: (line: string, refillInput?: boolean) => void;
   readonly clear: () => void;
+  readonly addScreens: (...consoleScreens: ConsoleScreen[]) => void;
 }
 
 export interface ConsoleScreen {

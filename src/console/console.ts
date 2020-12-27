@@ -1,7 +1,7 @@
 import { Console, ConsoleScreen } from './model';
 import * as readline from 'readline';
 
-export function getConsole(screens: ConsoleScreen[] = []): Console {
+export function getConsole(): Console {
   const promptMarker = '\x1b[1m\x1b[34m>\x1b[0m ';
 
   const output = process.stdout;
@@ -16,6 +16,7 @@ export function getConsole(screens: ConsoleScreen[] = []): Console {
   });
   readline.emitKeypressEvents(input, rl);
 
+  const screens: ConsoleScreen[] = [];
   let screen: ConsoleScreen;
 
   let currentInput = '';
@@ -63,10 +64,15 @@ export function getConsole(screens: ConsoleScreen[] = []): Console {
     output.write('\u001B[2J\u001B[0;0f');
   };
 
+  const addScreens = (...consoleScreens: ConsoleScreen[]) => {
+    screens.push(...consoleScreens);
+  };
+
   const console = {
     write,
     writeError,
-    clear
+    clear,
+    addScreens
   };
 
   const execute = (command: string) => {
@@ -77,8 +83,6 @@ export function getConsole(screens: ConsoleScreen[] = []): Console {
       execute('help');
     }
   };
-
-  execute('help');
 
   return console;
 }

@@ -6,10 +6,12 @@ import { getHelpScreen } from './help/screen';
 // const file = getFile(config.file);
 // const binance = getBinance(config.binance, file);
 // const graphScreen = getGraphScreen(config.console?.graph);
+const console = getConsole();
 const screens = [
-  getQuitScreen()
+  getQuitScreen(console)
 ];
-const console = getConsole([...screens, getHelpScreen(screens)]);
+console.addScreens(...screens);
+console.addScreens(getHelpScreen(console, screens));
 
 console.writeError('error');
 
