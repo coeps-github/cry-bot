@@ -1,18 +1,17 @@
 import { Console, ConsoleScreen } from '../console/model';
 
-export function getQuitScreen(): ConsoleScreen {
+export function getQuitScreen(console: Console): ConsoleScreen {
   return {
-    id: 'quit',
     show: (command: string) => {
       return command === 'q' || command === 'quit';
     },
-    write: (console: Console) => {
+    write: () => {
       console.clear();
       console.write('Quit Application ...', false);
       process.exit(0);
     },
-    help: (console: Console) => {
-      console.write('q   / quit:                Quit Application', false);
+    help: () => {
+      console.write('q    / quit:                    Quit Application', false);
     }
-  }
+  };
 }

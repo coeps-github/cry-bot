@@ -3,7 +3,7 @@ import { Console } from '../console/model';
 import { extractCommandValues } from '../console/helpers';
 import { createGraphLineCentered, createGraphLineLeft, fillString } from './helpers';
 
-export function getGraphScreen(config?: GraphConfig): GraphScreen {
+export function getGraphScreen(console: Console, config?: GraphConfig): GraphScreen {
   let min = 0;
   let width = config?.width || 200;
   let padding = config?.padding || 10;
@@ -12,7 +12,7 @@ export function getGraphScreen(config?: GraphConfig): GraphScreen {
 
   const cache: GraphLine[] = [];
 
-  const writeGraph = (console: Console, line: GraphLine) => {
+  const writeGraph = (line: GraphLine) => {
     const open = line.open;
     const close = line.close;
     const openFactor = line.open * valueFactor;
@@ -43,7 +43,6 @@ export function getGraphScreen(config?: GraphConfig): GraphScreen {
   };
 
   return {
-    id: 'graph',
     show: (command: string) => {
       const widthValues = extractCommandValues(['gw', 'setGraphWidth'], command);
       const paddingValues = extractCommandValues(['gp', 'setGraphPadding'], command);
@@ -63,23 +62,23 @@ export function getGraphScreen(config?: GraphConfig): GraphScreen {
       }
       return true;
     },
-    write: (console: Console) => {
+    write: () => {
       console.clear();
       console.write('Showing Graph ...', false);
-      cache.forEach(line => writeGraph(console, line));
+      cache.forEach(line => writeGraph(line));
     },
-    writeGraph: (console: Console, line: GraphLine) => {
-      writeGraph(console, line);
+    writeGraph: (line: GraphLine) => {
+      writeGraph(line);
       cache.push(line);
       if (cache.length > cachedRows) {
         cache.shift();
       }
     },
-    help: (console: Console) => {
-      console.write('gw  / setGraphWidth:       Set Graph Width        (default: 200)', false);
-      console.write('gp  / setGraphPadding:     Set Graph Padding      (default: 10)', false);
-      console.write('gvf / setGraphValueFactor: Set Graph Value Factor (default: 1)', false);
-      console.write('gcr / setGraphCachedRows:  Set Graph Cached Rows  (default: 50)', false);
+    help: () => {
+      console.write('gw   / setGraphWidth:           Set Graph Width             (default: 200)', false);
+      console.write('gp   / setGraphPadding:         Set Graph Padding           (default: 10)', false);
+      console.write('gvf  / setGraphValueFactor:     Set Graph Value Factor      (default: 1)', false);
+      console.write('gcr  / setGraphCachedRows:      Set Graph Cached Rows       (default: 50)', false);
     }
   };
 }

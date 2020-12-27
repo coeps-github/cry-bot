@@ -72,7 +72,7 @@ export function getConsole(screens: ConsoleScreen[] = []): Console {
   const execute = (command: string) => {
     screen = screens.filter(screen => screen.show(command))[0];
     if (screen) {
-      screen.write(console);
+      screen.write();
     } else {
       execute('help');
     }

@@ -6,6 +6,7 @@ import {
   aggregateMinWinPerCycle,
   aggregateTotalWin,
   buy,
+  createGraphLine,
   getNextDownCount,
   getNextUpCount,
   getWin,
@@ -16,13 +17,13 @@ import {
 } from '../helpers';
 import { CountCombination, CountStatisticsMap } from '../model';
 import { CandleStickWrapper } from '../../binance/model';
-import { Console } from '../../console/model';
+import { GraphScreen } from '../../graph/model';
 
 export function aggregateCandleCountStatistics(
   candleCountStatistics: CountStatisticsMap,
   candleStick: CandleStickWrapper,
   candleCountCombinations: CountCombination[],
-  console?: Console
+  graphScreen?: GraphScreen
 ): CountStatisticsMap {
   const statistics = candleCountStatistics[candleStick.symbol]?.statistics || candleCountCombinations.map(cc => ({
     combination: cc,
@@ -72,8 +73,8 @@ export function aggregateCandleCountStatistics(
     totalWin: quoteStatistic.totalWin + getWin(candleStick.tick),
     totalTicks: quoteStatistic.totalTicks + 1
   };
-  if (console) {
-    // console.writeGraph(createGraphLine(candleStick.tick, updatedStatistics));
+  if (graphScreen) {
+    graphScreen.writeGraph(createGraphLine(candleStick.tick, updatedStatistics));
   }
   return {
     ...candleCountStatistics,

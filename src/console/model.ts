@@ -10,16 +10,8 @@ export interface Console {
   readonly clear: () => void;
 }
 
-export type ConsoleScreens =
-  'statistics/candle-count' |
-  'statistics/moving-average-count' |
-  'graph' |
-  'quit' |
-  'help';
-
 export interface ConsoleScreen {
-  readonly id: ConsoleScreens;
   readonly show: (command: string) => boolean;
-  readonly write: (console: Console) => void;
-  readonly help: (console: Console) => void;
+  readonly write: () => void;
+  readonly help: () => void;
 }

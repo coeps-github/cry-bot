@@ -1,4 +1,4 @@
-import { Console, ConsoleScreen } from '../console/model';
+import { ConsoleScreen } from '../console/model';
 
 export interface GraphConfig {
   readonly width?: number;
@@ -8,7 +8,7 @@ export interface GraphConfig {
 }
 
 export interface GraphScreen extends ConsoleScreen {
-  readonly writeGraph: (console: Console, line: GraphLine) => void;
+  readonly writeGraph: (line: GraphLine) => void;
 }
 
 export interface GraphLine {
