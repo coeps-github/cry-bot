@@ -13,6 +13,8 @@ export interface Console {
 }
 
 export interface ConsoleScreen {
+  readonly name: string;
+  readonly isRunning: () => boolean;
   readonly canShow: (command: string) => boolean;
   readonly show: () => void;
   readonly hide: () => void;

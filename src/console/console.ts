@@ -22,7 +22,7 @@ export function getConsole(): Console {
   let currentInput = '';
 
   input.on('data', (data: string) => {
-    currentInput += data.replace(/^(\r\n|\r|\n)/, '');
+    currentInput += data.replace(/^(\r\n|\r|\n|[\b]|\t)/, '');
   });
 
   input.on('keypress', (_char: string, key: { sequence: string, name: string, ctrl: boolean, meta: boolean, shift: boolean }) => {
@@ -61,13 +61,15 @@ export function getConsole(): Console {
   };
 
   const execute = (command: string) => {
+    currentInput = '';
     if (screen) {
       screen.hide();
     }
     screen = screens.filter(screen => screen.canShow(command))[0];
     if (screen) {
-      currentInput = '';
       screen.show();
+    } else {
+      write(`Unknown command: ${command}`);
     }
   };
 

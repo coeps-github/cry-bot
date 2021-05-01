@@ -43,6 +43,8 @@ export function getGraphScreen(console: Console, config?: GraphConfig): GraphScr
   };
 
   return {
+    name: 'Graph',
+    isRunning: () => false,
     canShow: (command: string) => {
       const widthValues = extractCommandValues(['gw', 'setGraphWidth'], command);
       const paddingValues = extractCommandValues(['gp', 'setGraphPadding'], command);
@@ -68,7 +70,7 @@ export function getGraphScreen(console: Console, config?: GraphConfig): GraphScr
       cache.forEach(line => writeGraph(line));
     },
     hide: () => {
-
+      // empty
     },
     writeGraph: (line: GraphLine) => {
       writeGraph(line);

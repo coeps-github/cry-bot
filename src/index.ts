@@ -5,6 +5,8 @@ import { getDataUpdateScreen } from './data/update/screen';
 import { getBinance } from './binance/binance';
 import { getConfig } from './config/config';
 import { getFile } from './file/file';
+import { getDataVerifyScreen } from './data/verify/screen';
+import { getExecutionScreen } from './execution/screen';
 
 const config = getConfig();
 const file = getFile(config.file);
@@ -13,15 +15,18 @@ const binance = getBinance(config.binance, file);
 // const graphScreen = getGraphScreen(config.console?.graph);
 
 const console = getConsole();
-const screens = [
+const appScreens = [
   getDataUpdateScreen(console, binance),
+  getDataVerifyScreen(console, binance)
+];
+const metaScreens = [
+  getExecutionScreen(console, appScreens),
   getQuitScreen(console)
 ];
+const screens = [...appScreens, ...metaScreens];
 const helpScreen = getHelpScreen(console, screens);
 console.addScreens(...screens);
 console.addScreens(helpScreen);
-
-console.writeError('error');
 
 console.execute('help');
 

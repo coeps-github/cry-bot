@@ -8,6 +8,7 @@ import {
   CandleStickHistoryRecursiveOptions,
   CandleSticksOptions,
   CandleSticksWithHistoryOptions,
+  CandleStickValidationResult,
   CandleStickWrapper,
   CandleStickWrapperAPI,
   Chart,
@@ -16,8 +17,8 @@ import {
   Period
 } from './model';
 import { concat, EMPTY, Observable } from 'rxjs';
-import { concatMap, filter, map, share, tap } from 'rxjs/operators';
-import { getFileName } from './helpers';
+import { concatMap, filter, map, reduce, share, tap } from 'rxjs/operators';
+import { getFileName, isWithinPeriod } from './helpers';
 import { File } from '../file/model';
 import { chain } from '../shared/chain';
 
@@ -61,7 +62,19 @@ export function getBinance(config: BinanceConfig, file: File): Binance {
       share(),
       map((candleSticks: CandleStickWrapperAPI) => {
         const { e: eventType, E: eventTime, s: symbol, k: ticks } = candleSticks;
-        const { o: open, h: high, l: low, c: close, v: volume, n: trades, i: interval, x: isFinal, q: quoteVolume, V: buyVolume, Q: quoteBuyVolume } = ticks;
+        const {
+          o: open,
+          h: high,
+          l: low,
+          c: close,
+          v: volume,
+          n: trades,
+          i: interval,
+          x: isFinal,
+          q: quoteVolume,
+          V: buyVolume,
+          Q: quoteBuyVolume
+        } = ticks;
         return {
           symbol,
           interval,
@@ -204,12 +217,29 @@ export function getBinance(config: BinanceConfig, file: File): Binance {
     const candles = getCandleSticks(symbol, period, options);
     return concat(history, candles);
   };
+  const checkCandleStickHistoryLocal: Binance['checkCandleStickHistoryLocal'] = (
+    symbol = 'BTCUSDT',
+    period: Period = '1m'
+  ) => {
+    const fileName = getFileName(symbol, period);
+    const fileHistory = file.readLines<CandleStickWrapper>(fileName);
+    return fileHistory.pipe(
+      reduce((result, candle, index) => {
+        return {
+          valid: result.last ? isWithinPeriod(period, result.last.tick.eventTime, candle.tick.eventTime) : index === 0,
+          last: candle
+        };
+      }, { valid: true, last: null } as CandleStickValidationResult),
+      map(last => last.valid)
+    );
+  };
   return {
     getChart,
     getCandleSticks,
     getCandleStickHistory,
     getCandleStickHistoryLocal,
     getCandleSticksWithHistory,
-    getCandleSticksWithHistoryLocal
+    getCandleSticksWithHistoryLocal,
+    checkCandleStickHistoryLocal
   } as Binance;
 }

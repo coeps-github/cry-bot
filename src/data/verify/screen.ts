@@ -3,7 +3,7 @@ import { Binance } from '../../binance/model';
 import { extractCommandValues } from '../../console/helpers';
 import { periods } from '../../binance/helpers';
 
-export function getDataUpdateScreen(console: Console, binance: Binance): ConsoleScreen {
+export function getDataVerifyScreen(console: Console, binance: Binance): ConsoleScreen {
   let symbol = 'BTCUSDT';
   let isRunning = false;
   let visible = false;
@@ -11,9 +11,9 @@ export function getDataUpdateScreen(console: Console, binance: Binance): Console
 
   const update = () => {
     isRunning = true;
-    periods.forEach(period => binance.getCandleStickHistoryLocal(symbol, period, { limit: 1000000000 }).subscribe({
-      error: (error) => writeAndCache(() => console.writeError(`${period} error: ${error.message}!`)),
-      complete: () => writeAndCache(() => console.write(`${period} done!`))
+    periods.forEach(period => binance.checkCandleStickHistoryLocal(symbol, period).subscribe({
+      next: (result) => writeAndCache(() => console.write(`${period} ${result ? 'data verified' : 'data inconsistent'}!`)),
+      error: (error) => writeAndCache(() => console.writeError(`${period} error: ${error.message}!`))
     }));
   };
 
@@ -24,7 +24,7 @@ export function getDataUpdateScreen(console: Console, binance: Binance): Console
     cache = [...cache, fn];
     if (cache.length >= periods.length) {
       if (visible) {
-        console.write('Updating Data done!');
+        console.write('Verifying Data done!');
       }
       cache = [];
       isRunning = false;
@@ -32,20 +32,20 @@ export function getDataUpdateScreen(console: Console, binance: Binance): Console
   };
 
   return {
-    name: 'DataUpdate',
+    name: 'DataVerify',
     isRunning: () => isRunning,
     canShow: (command: string) => {
-      const symbolValues = extractCommandValues(['du', 'dataUpdate'], command);
+      const symbolValues = extractCommandValues(['dv', 'dataVerify'], command);
       const symbolValue = symbolValues[0];
       if (symbolValue) {
         symbol = symbolValue;
       }
-      return command === 'du' || command === 'dataUpdate';
+      return command === 'dv' || command === 'dataVerify';
     },
     show: () => {
       visible = true;
       console.clear();
-      console.write('Updating Data ...');
+      console.write('Verifying Data ...');
       cache.forEach(fn => fn());
       if (!isRunning) {
         update();
@@ -55,8 +55,8 @@ export function getDataUpdateScreen(console: Console, binance: Binance): Console
       visible = false;
     },
     help: () => {
-      console.write('du   / dataUpdate:              Update Data                 (default: BTCUSDT)');
-      console.write('ducr / setDataUpdateCachedRows: Set Data Update Cached Rows (default: 50)');
+      console.write('dv   / dataVerify:              Verify Data                 (default: BTCUSDT)');
+      console.write('dvcr / setDataVerifyCachedRows: Set Data Update Cached Rows (default: 50)');
     }
   };
 }

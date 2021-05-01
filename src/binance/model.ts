@@ -13,6 +13,7 @@ export interface Binance {
   readonly getCandleSticks: (symbol?: string, period?: Period, options?: CandleSticksOptions) => Observable<CandleStickWrapper>;
   readonly getCandleSticksWithHistory: (symbol?: string, period?: Period, options?: CandleSticksWithHistoryOptions) => Observable<CandleStickWrapper>;
   readonly getCandleSticksWithHistoryLocal: (symbol?: string, period?: Period, options?: CandleSticksWithHistoryOptions) => Observable<CandleStickWrapper>;
+  readonly checkCandleStickHistoryLocal: (symbol?: string, period?: Period) => Observable<boolean>;
 }
 
 export type Period =
@@ -117,4 +118,9 @@ export interface TickAPI {
   readonly l: string;
   readonly c: string;
   readonly v: string;
+}
+
+export interface CandleStickValidationResult {
+  readonly valid: boolean;
+  readonly last: CandleStickWrapper | null;
 }
