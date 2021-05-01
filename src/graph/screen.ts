@@ -10,7 +10,7 @@ export function getGraphScreen(console: Console, config?: GraphConfig): GraphScr
   let valueFactor = config?.valueFactor || 1;
   let cachedRows = config?.cachedRows || 50;
 
-  const cache: GraphLine[] = [];
+  let cache: GraphLine[] = [];
 
   const writeGraph = (line: GraphLine) => {
     const open = line.open;
@@ -43,7 +43,7 @@ export function getGraphScreen(console: Console, config?: GraphConfig): GraphScr
   };
 
   return {
-    show: (command: string) => {
+    canShow: (command: string) => {
       const widthValues = extractCommandValues(['gw', 'setGraphWidth'], command);
       const paddingValues = extractCommandValues(['gp', 'setGraphPadding'], command);
       const valueFactorValues = extractCommandValues(['gvf', 'setGraphValueFactor'], command);
@@ -62,23 +62,26 @@ export function getGraphScreen(console: Console, config?: GraphConfig): GraphScr
       }
       return true;
     },
-    write: () => {
+    show: () => {
       console.clear();
-      console.write('Showing Graph ...', false);
+      console.write('Showing Graph ...');
       cache.forEach(line => writeGraph(line));
+    },
+    hide: () => {
+
     },
     writeGraph: (line: GraphLine) => {
       writeGraph(line);
-      cache.push(line);
+      cache = [...cache, line];
       if (cache.length > cachedRows) {
-        cache.shift();
+        cache = [...cache.slice(1)];
       }
     },
     help: () => {
-      console.write('gw   / setGraphWidth:           Set Graph Width             (default: 200)', false);
-      console.write('gp   / setGraphPadding:         Set Graph Padding           (default: 10)', false);
-      console.write('gvf  / setGraphValueFactor:     Set Graph Value Factor      (default: 1)', false);
-      console.write('gcr  / setGraphCachedRows:      Set Graph Cached Rows       (default: 50)', false);
+      console.write('gw   / setGraphWidth:           Set Graph Width             (default: 200)');
+      console.write('gp   / setGraphPadding:         Set Graph Padding           (default: 10)');
+      console.write('gvf  / setGraphValueFactor:     Set Graph Value Factor      (default: 1)');
+      console.write('gcr  / setGraphCachedRows:      Set Graph Cached Rows       (default: 50)');
     }
   };
 }

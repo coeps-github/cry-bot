@@ -22,7 +22,7 @@ export function getConsole(): Console {
   let currentInput = '';
 
   input.on('data', (data: string) => {
-    currentInput += data;
+    currentInput += data.replace(/^(\r\n|\r|\n)/, '');
   });
 
   input.on('keypress', (_char: string, key: { sequence: string, name: string, ctrl: boolean, meta: boolean, shift: boolean }) => {
@@ -34,13 +34,11 @@ export function getConsole(): Console {
     }
   });
 
-  rl.on('line', (line: string) => {
-    currentInput = line;
-    execute(line);
+  rl.on('line', () => {
+    execute(currentInput);
   });
 
-  const write = (line = '', refillInput = true, isError = false) => {
-    const current = rl.line || currentInput;
+  const write = (line = '', isError = false) => {
     readline.clearLine(output, 0);
     readline.cursorTo(output, 0);
     if (line) {
@@ -51,38 +49,37 @@ export function getConsole(): Console {
       }
     }
     output.write(promptMarker);
-    if (refillInput) {
-      rl.write(current);
-    }
+    rl.write(currentInput);
   };
 
-  const writeError = (line = '', refillInput = true) => {
-    write(line, refillInput, true);
+  const writeError = (line = '') => {
+    write(line, true);
   };
 
   const clear = () => {
     output.write('\u001B[2J\u001B[0;0f');
   };
 
+  const execute = (command: string) => {
+    if (screen) {
+      screen.hide();
+    }
+    screen = screens.filter(screen => screen.canShow(command))[0];
+    if (screen) {
+      currentInput = '';
+      screen.show();
+    }
+  };
+
   const addScreens = (...consoleScreens: ConsoleScreen[]) => {
     screens.push(...consoleScreens);
   };
 
-  const console = {
+  return {
     write,
     writeError,
     clear,
+    execute,
     addScreens
   };
-
-  const execute = (command: string) => {
-    screen = screens.filter(screen => screen.show(command))[0];
-    if (screen) {
-      screen.write();
-    } else {
-      execute('help');
-    }
-  };
-
-  return console;
 }

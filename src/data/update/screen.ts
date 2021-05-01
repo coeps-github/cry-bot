@@ -1,7 +1,8 @@
 import { Console, ConsoleScreen } from '../../console/model';
 import { Binance } from '../../binance/model';
 
-export function getDataScreen(console: Console, binance: Binance): ConsoleScreen {
+export function getDataUpdateScreen(console: Console, binance: Binance): ConsoleScreen {
+  let visible = false;
   let cache: (() => void)[] = [];
 
   const update = () => {
@@ -68,29 +69,37 @@ export function getDataScreen(console: Console, binance: Binance): ConsoleScreen
   };
 
   const writeAndCache = (fn: () => void) => {
-    fn();
-    cache.push(fn);
+    if (visible) {
+      fn();
+    }
+    cache = [...cache, fn];
     if (cache.length >= 15) {
-      console.write('Updating Data done!');
+      if (visible) {
+        console.write('Updating Data done!');
+      }
       cache = [];
     }
   };
 
   return {
-    show: (command: string) => {
+    canShow: (command: string) => {
       return command === 'du' || command === 'dataUpdate';
     },
-    write: () => {
+    show: () => {
+      visible = true;
       console.clear();
-      console.write('Updating Data ...', false);
+      console.write('Updating Data ...');
       cache.forEach(fn => fn());
       if (!cache.length) {
         update();
       }
     },
+    hide: () => {
+      visible = false;
+    },
     help: () => {
-      console.write('du   / dataUpdate:              Update Data', false);
-      console.write('ducr / setDataUpdateCachedRows: Set Data Update Cached Rows (default: 50)', false);
+      console.write('du   / dataUpdate:              Update Data');
+      console.write('ducr / setDataUpdateCachedRows: Set Data Update Cached Rows (default: 50)');
     }
   };
 }

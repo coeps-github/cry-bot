@@ -1,19 +1,29 @@
 import { getConsole } from './console/console';
 import { getQuitScreen } from './quit/screen';
 import { getHelpScreen } from './help/screen';
+import { getDataUpdateScreen } from './data/update/screen';
+import { getBinance } from './binance/binance';
+import { getConfig } from './config/config';
+import { getFile } from './file/file';
 
-// const config = getConfig();
-// const file = getFile(config.file);
-// const binance = getBinance(config.binance, file);
+const config = getConfig();
+const file = getFile(config.file);
+const binance = getBinance(config.binance, file);
+
 // const graphScreen = getGraphScreen(config.console?.graph);
+
 const console = getConsole();
 const screens = [
+  getDataUpdateScreen(console, binance),
   getQuitScreen(console)
 ];
+const helpScreen = getHelpScreen(console, screens);
 console.addScreens(...screens);
-console.addScreens(getHelpScreen(console, screens));
+console.addScreens(helpScreen);
 
 console.writeError('error');
+
+console.execute('help');
 
 // const statistics = getStatistics(binance, console);
 

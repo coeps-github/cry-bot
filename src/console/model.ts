@@ -5,14 +5,16 @@ export interface ConsoleConfig {
 }
 
 export interface Console {
-  readonly write: (line: string, refillInput?: boolean) => void;
-  readonly writeError: (line: string, refillInput?: boolean) => void;
+  readonly write: (line: string) => void;
+  readonly writeError: (line: string) => void;
   readonly clear: () => void;
+  readonly execute: (command: string) => void;
   readonly addScreens: (...consoleScreens: ConsoleScreen[]) => void;
 }
 
 export interface ConsoleScreen {
-  readonly show: (command: string) => boolean;
-  readonly write: () => void;
+  readonly canShow: (command: string) => boolean;
+  readonly show: () => void;
+  readonly hide: () => void;
   readonly help: () => void;
 }

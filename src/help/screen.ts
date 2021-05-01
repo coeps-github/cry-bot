@@ -2,17 +2,20 @@ import { Console, ConsoleScreen } from '../console/model';
 
 export function getHelpScreen(console: Console, otherScreens: ConsoleScreen[] = []): ConsoleScreen {
   const helpScreen = {
-    show: (command: string) => {
+    canShow: (command: string) => {
       return command === 'h' || command === 'help';
     },
-    write: () => {
+    show: () => {
       console.clear();
-      console.write('Commands:', false);
+      console.write('Commands:');
       otherScreens.forEach(screen => screen.help());
       helpScreen.help();
     },
+    hide: () => {
+
+    },
     help: () => {
-      console.write('h    / help:                    Show available commands (this info)', false);
+      console.write('h    / help:                    Show available commands (this info)');
     }
   };
   return helpScreen;
