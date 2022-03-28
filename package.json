@@ -34,7 +34,7 @@
     "update-dependencies": "npm-check-updates --upgrade && npm install"
   },
   "dependencies": {
-    "minimist": "1.2.5",
+    "minimist": "1.2.6",
     "node-binance-api": "0.12.4",
     "rxjs": "6.6.3",
     "trading-signals": "1.2.1"
